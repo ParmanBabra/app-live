@@ -5,7 +5,6 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Fade, Modal, Paper, Backdrop } from "@mui/material";
-import { Props } from "react";
 
 const style = {
   position: "absolute" as "absolute",
