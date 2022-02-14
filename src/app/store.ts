@@ -1,11 +1,18 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
 
-import { createStore, combineReducers, compose } from "redux";
-import { reduxFirestore, firestoreReducer } from "redux-firestore";
-import { initializeApp } from "firebase/app";
-import "firebase/auth";
-import { initializeFirestore } from "firebase/firestore";
+// import { createStore, combineReducers, compose } from "redux";
+// import { reduxFirestore, firestoreReducer } from "redux-firestore";
+// import { initializeApp } from "firebase/app";
+// import "firebase/auth";
+// import { getFirestore } from "firebase/firestore";
+
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore"; // <- needed if using firestore
+import { createStore, combineReducers } from "redux";
+import { firebaseReducer } from "react-redux-firebase";
+import { createFirestoreInstance, firestoreReducer } from "redux-firestore"; //
 
 const firebaseConfig = {
   apiKey: "AIzaSyCdcu_2VyDQmQxK6KuC9fRWFSZh8w3grSU",
@@ -18,23 +25,29 @@ const firebaseConfig = {
   appId: "1:381229955097:web:b0696262749efbdb055288",
   measurementId: "G-PS5X0QZMYH",
 };
-const rfConfig = {}; 
 
-const app = initializeApp(firebaseConfig);
-initializeFirestore(app, {});
+const rrfConfig = {
+  // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
+};
 
-const createStoreWithFirebase = compose(
-  reduxFirestore(app, rfConfig) 
-)(createStore);
+firebase.initializeApp(firebaseConfig);
+firebase.firestore();
 
 const rootReducer = combineReducers({
   counter: counterReducer,
-  firestore: firestoreReducer,
+  firebase: firebaseReducer,
+  firestore: firestoreReducer, // <- needed if using firestore
 });
 
-// Create store with reducers and initial state
 const initialState = {};
-export const store = createStoreWithFirebase(rootReducer, initialState);
+export const store = createStore(rootReducer, initialState);
+
+export const rrfProps = {
+  firebase: firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance, // <- needed if using firestore
+};
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

@@ -3,8 +3,9 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 import App from "./App";
-import { store } from "./app/store";
+import { store, rrfProps } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 
@@ -13,10 +14,12 @@ const theme = createTheme();
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <App />
-      </ThemeProvider>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
+      </ReactReduxFirebaseProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

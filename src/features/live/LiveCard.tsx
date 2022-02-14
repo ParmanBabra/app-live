@@ -9,8 +9,9 @@ import GroupIcon from "@mui/icons-material/Group";
 import SickIcon from "@mui/icons-material/Sick";
 import { Box } from "@mui/material";
 
-export default function LiveCard() {
 
+
+export default function LiveCard() {
   return (
     <Card elevation={0}>
       <CardHeader
