@@ -85,7 +85,7 @@ export const startNewLive = createAsyncThunk<void, void>(
 export const exportChats = createAsyncThunk<void, void>(
   "live/export-chats",
   async (request, thunkApi) => {
-    const chats = await getChats();
+    const live = await getChats();
     const now = new Date();
 
     const schema = [
@@ -114,12 +114,12 @@ export const exportChats = createAsyncThunk<void, void>(
       },
     ];
 
-    console.log(chats);
+    console.log(live);
 
     try {
-      await writeXlsxFile(chats, {
+      await writeXlsxFile(live.chats, {
         schema: schema,
-        fileName: `chats.xlsx`,
+        fileName: `chats_${live.liveTitle.replace(" ", "_")}.xlsx`,
       });
     } catch (e) {
       console.log(e);
@@ -132,8 +132,7 @@ export const userSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {},
-  extraReducers: (builder) => {
-  },
+  extraReducers: (builder) => {},
 });
 
 export const {} = userSlice.actions;

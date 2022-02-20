@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { grantApi, loginApi, registerApi } from "./api";
+import { checkPermissionApi, grantApi } from "../admin-live/api";
+import { loginApi, registerApi } from "./api";
 import {
   LoginRequest,
   LoginResult,
@@ -18,6 +19,11 @@ export const login = createAsyncThunk<LoginResult | null, LoginRequest>(
   async (request, thunkApi) => {
     const response = await loginApi(request.email.toLowerCase());
     if (!response) throw "Email address not found";
+
+    const permission = await checkPermissionApi(request.email.toLowerCase());
+
+    if (!permission)
+      throw "Email address cannot access to live. Please register";
 
     if (request.rememberMe) {
       let user: UserState = {
@@ -40,7 +46,7 @@ export const register = createAsyncThunk<RegisterResult, RegisterRequest>(
   "user/register",
   async (request, thunkApi) => {
     let result = await registerApi(request);
-    await grantApi(result.email);
+    await grantApi(result.email.toLowerCase());
 
     return result;
   }
@@ -88,7 +94,7 @@ export const userSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.email = action.payload?.email;
         state.name = action.payload?.name;
-        state.isAdmin = false;
+        state.isAdmin = action.payload?.is_admin;
         state.firstName = action.payload?.first_name;
         state.lastName = action.payload?.last_name;
         state.isLogin = true;

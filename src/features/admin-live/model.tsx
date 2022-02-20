@@ -1,3 +1,5 @@
+import { Chat } from "../live/model";
+
 export type UserExcelData = {
   date: Date;
   email: string;
@@ -24,6 +26,11 @@ export type StartLiveUpdateData = {
   grant_users: string[];
   watching_count: number;
   watching_users: string[];
+};
+
+export type ChatsInfomation = {
+  liveTitle: string;
+  chats: Chat[];
 };
 
 export const excelMap = {

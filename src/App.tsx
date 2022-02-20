@@ -23,6 +23,9 @@ import { AdminLive } from "./features/admin-live/AdminLive";
 import { Check } from "@mui/icons-material";
 import { toggleShowName } from "./features/app/AppSlice";
 import PersonIcon from "@mui/icons-material/Person";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function App() {
   const user = useSelector((state: RootState) => state.user);
@@ -80,11 +83,17 @@ function App() {
           onClose={handleClose}
         >
           <MenuItem onClick={() => toLink("/")}>
-            <ListItemText inset>Live</ListItemText>
+            <ListItemIcon>
+              <OndemandVideoIcon />
+            </ListItemIcon>
+            Live
           </MenuItem>
           {user.isAdmin && (
             <MenuItem onClick={() => toLink("/admin-live")}>
-              <ListItemText inset>Admin Live</ListItemText>
+              <ListItemIcon>
+                <SupervisorAccountIcon />
+              </ListItemIcon>
+              Admin Live
             </MenuItem>
           )}
           <MenuItem onClick={() => dispatch(toggleShowName())}>
@@ -98,7 +107,10 @@ function App() {
             Show Name
           </MenuItem>
           <MenuItem onClick={handleLogout}>
-            <ListItemText inset>Logout</ListItemText>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            Logout
           </MenuItem>
         </Menu>
       </Fragment>

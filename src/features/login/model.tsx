@@ -35,4 +35,5 @@ export type RegisterResult = {
   email: string;
   organization?: string;
   tel: string;
+  is_admin: boolean;
 };

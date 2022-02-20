@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import {
+  ChatsInfomation,
   firstName,
   lastName,
   StartLiveData,
@@ -98,17 +99,44 @@ export const startNewLiveApi = async () => {
   }
 };
 
-export const getChats = async (): Promise<Chat[]> => {
+export const getChats = async (): Promise<ChatsInfomation> => {
   const db = getFirestore();
   const refDoc = doc(db, "live", "current");
+  const docLive = await getDoc(refDoc);
   const refCol = collection(refDoc, "chat");
-  const refChats = await getDocs(refCol);
-  const chats: Chat[] = refChats.docs.map((e) => ({
+  const docChats = await getDocs(refCol);
+  const chats: Chat[] = docChats.docs.map((e) => ({
     create_date: e.data().create_date.toDate(),
     message: e.data().message,
     username: e.data().username,
     email: e.data().email,
   }));
 
-  return chats;
+  let live: any = docLive.data();
+
+  return {
+    liveTitle: live.title as string,
+    chats: chats,
+  };
+};
+
+export const grantApi = async (email: string) => {
+  let db = getFirestore();
+  let docRef = doc(db, "live", "current");
+  let ref = await getDoc(docRef);
+  let live: any = ref.data();
+  live.grant_users.push(email);
+
+  await updateDoc(docRef, { grant_users: live.grant_users });
+};
+
+export const checkPermissionApi = async (email: string): Promise<boolean> => {
+  let db = getFirestore();
+  let docRef = doc(db, "live", "current");
+  let ref = await getDoc(docRef);
+  let live: any = ref.data();
+
+  if (live.step === 0) return true;
+
+  return live.grant_users.includes(email);
 };
