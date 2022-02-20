@@ -140,7 +140,7 @@ function Live() {
 
     const chatMessage: Chat = {
       email: user.email as string,
-      username: app.isShowName ? (user.name as string) : "ไม่ระบุชื่อ",
+      username: app.isShowName ? (user.firstName as string) : "ไม่ระบุชื่อ",
       message: message,
       create_date: new Date(),
     };
@@ -196,6 +196,11 @@ function Live() {
                       variant="body2"
                       component="span"
                       className="message"
+                      sx={{
+                        whiteSpace: "pre-wrap",
+                        display: "inline",
+                        wordBreak: "break-word",
+                      }}
                     >
                       {chat.message}
                     </Typography>

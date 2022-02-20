@@ -64,7 +64,11 @@ export const Video = (props: Props) => {
       }}
     >
       {iamge != "" ? (
-        <img src={iamge} alt="Error Image" style={{ width: "100%" }}></img>
+        <img
+          src={iamge}
+          alt="Error Image"
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        ></img>
       ) : (
         <ReactPlayer
           ref={playerRef}
