@@ -1,19 +1,14 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { createTheme, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { useSelector } from "react-redux";
-import {
-  useFirestoreConnect,
-  useFirestore,
-  useFirebase,
-} from "react-redux-firebase";
+import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
 
-import LoadingButton from "@mui/lab/LoadingButton";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Drawer from "@mui/material/Drawer";
+import MuiDrawer from "@mui/material/Drawer";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
@@ -26,29 +21,78 @@ import { RootState } from "../../app/store";
 import "./Live.css";
 import simpleImage from "./../../images/live-streaming.png";
 import LiveCard from "./LiveCard";
-import { Button } from "@mui/material";
+import { CSSObject, Theme } from "@mui/material";
+import Video from "./Video";
+import { Chat } from "./model";
+import { LiveNotStart } from "./LiveNotStart";
 
-const drawerWidth = 375;
+const drawerMaxWidth = 375;
+const drawerMinWidth = 75;
 const appBarHeight = 48;
 const titleStream = 75;
+
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  width: drawerMaxWidth,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  ...(open && {
+    ...openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
+  }),
+  ...(!open && {
+    ...closedMixin(theme),
+    "& .MuiDrawer-paper": closedMixin(theme),
+  }),
+}));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
 
+  justifyContent: "flex-start",
   padding: theme.spacing(0, 1),
+
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
+
   minHeight: `${appBarHeight}px !important`,
-  justifyContent: "flex-start",
 }));
 
+const openedMixin = (theme: Theme): CSSObject => ({
+  width: drawerMaxWidth,
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: "hidden",
+});
+
+const closedMixin = (theme: Theme): CSSObject => ({
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: "hidden",
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up("sm")]: {
+    width: `calc(${theme.spacing(9)} + 1px)`,
+  },
+});
+
 function Live() {
+  const [drawerOpen, setDrawerOpen] = useState(true);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [startIndexChat, setStartIndexChat] = useState(0);
+  const [firstLoad, setFirstLoad] = useState(true);
 
   useFirestoreConnect([
+    {
+      collection: "live",
+      doc: "current",
+    },
     {
       collection: "live",
       doc: "current",
@@ -59,16 +103,44 @@ function Live() {
     }, // or 'todos'
   ]);
   const firestore = useFirestore();
-
+  const user = useSelector((state: RootState) => state.user);
+  const app = useSelector((state: RootState) => state.app);
   const chats = useSelector(
     (state: RootState) => state.firestore.ordered.chats
   );
 
+  const live = useSelector((state: RootState) => state.firestore.data.live);
+
+  const updateUserCounting = async () => {
+    console.log("update watching count...");
+    let doc = await firestore.collection("live").doc("current").get();
+    let live: any = doc.data();
+
+    if (!live.watching_users.includes(user.email)) {
+      live.watching_users.push(user.email);
+      live.watching_count += 1;
+      await firestore.collection("live").doc("current").update(live);
+    }
+  };
+
+  useEffect(() => {
+    if (!user.isLogin) {
+      return;
+    }
+
+    let updating = setTimeout(updateUserCounting, 6000);
+
+    return function cleanup() {
+      clearTimeout(updating);
+    };
+  }, [firstLoad, user.isLogin]);
+
   const handleOnSend = () => {
     setMessage("");
 
-    const chatMessage = {
-      username: "Parman",
+    const chatMessage: Chat = {
+      email: user.email as string,
+      username: app.isShowName ? (user.name as string) : "ไม่ระบุชื่อ",
       message: message,
       create_date: new Date(),
     };
@@ -79,78 +151,33 @@ function Live() {
       .add(chatMessage);
   };
 
-  const handleOnLoadMore = async () => {
-    setLoading(true);
-    await firestore.get({
-      collection: "live",
-      doc: "current",
-      subcollections: [{ collection: "chat" }],
-      orderBy: [["create_date", "desc"]],
-      //   limit: 10,
-      //   startAt: 0,
-      //   endAt: 2,
-      storeAs: "chats",
-    });
-    setLoading(false);
+  const renderDrawButton = (opened: boolean) => {
+    if (opened) {
+      return <KeyboardArrowRightIcon fontSize="small" />;
+    } else {
+      return <KeyboardArrowLeftIcon fontSize="small" />;
+    }
   };
 
-  return (
-    <Fragment>
-      <Box
-        component="div"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: `calc(100vw - ${drawerWidth}px)`,
-          height: "100vh",
-        }}
-      >
-        <DrawerHeader />
+  const renderSectionChat = (opened: boolean, drawed: boolean) => {
+    if (!opened) return <Fragment></Fragment>;
 
-        <img
-          src={simpleImage}
-          alt="Simple"
-          style={{
-            maxHeight: `calc(100vh - ${appBarHeight}px - ${titleStream}px)`,
-          }}
-        />
-        <LiveCard />
-      </Box>
-      <Drawer
-        open={true}
-        variant="persistent"
-        anchor="right"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-      >
-        <DrawerHeader />
-        <Toolbar variant="dense">
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <KeyboardArrowRightIcon fontSize="small" />
-          </IconButton>
-          <Typography
-            variant="subtitle1"
-            color="inherit"
-            align="center"
-            noWrap
-            sx={{ flexGrow: 1 }}
-          >
-            STREAM CHAT
-          </Typography>
-        </Toolbar>
-        <Divider />
-        <Box sx={{ overflow: "auto", flexGrow: 1 }}>
+    let displayStyle: any = {};
+    let displayStyleTextBox: any = {};
+
+    if (!drawed) {
+      displayStyle = {
+        display: { xs: "block", md: "none", lg: "none" },
+        minHeight: { xs: "100px", md: "auto", lg: "auto" },
+      };
+      displayStyleTextBox = {
+        display: { xs: "flex", md: "none", lg: "none" },
+      };
+    }
+
+    return (
+      <Fragment>
+        <Box sx={{ overflow: "auto", flexGrow: 1, ...displayStyle }}>
           <Typography variant="subtitle2" component="div" px={1} pt={1}>
             Welcome to the chat room!
           </Typography>
@@ -176,17 +203,6 @@ function Live() {
                 );
               })
             : ""}
-          {/* 
-          <LoadingButton
-            fullWidth
-            onClick={handleOnLoadMore}
-            loading={loading}
-            loadingIndicator="Loading..."
-            variant="outlined"
-          >
-            Load More
-          </LoadingButton> 
-          */}
         </Box>
         <Divider />
         <Paper
@@ -194,6 +210,7 @@ function Live() {
             p: "2px 4px",
             display: "flex",
             alignItems: "center",
+            ...displayStyleTextBox,
           }}
         >
           <InputBase
@@ -203,7 +220,7 @@ function Live() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={(e: any) => {
-              if (e.code === "Enter" || e.code === "NumpadEnter") {
+              if (e.key === "Enter" || e.key === "NumpadEnter") {
                 handleOnSend();
               }
             }}
@@ -217,7 +234,119 @@ function Live() {
             <SendIcon />
           </IconButton>
         </Paper>
-      </Drawer>
+      </Fragment>
+    );
+  };
+
+  const handleOnLoadMore = async () => {
+    setLoading(true);
+    await firestore.get({
+      collection: "live",
+      doc: "current",
+      subcollections: [{ collection: "chat" }],
+      orderBy: [["create_date", "desc"]],
+      //   limit: 10,
+      //   startAt: 0,
+      //   endAt: 2,
+      storeAs: "chats",
+    });
+    setLoading(false);
+  };
+
+  if (!live) return <Fragment></Fragment>;
+
+  if (live.current.step === 0) {
+    return (
+      <Fragment>
+        <LiveNotStart />
+      </Fragment>
+    );
+  }
+
+  return (
+    <Fragment>
+      <Box
+        component="div"
+        sx={{
+          width: "100vw",
+          flexGrow: 1,
+          display: "grid",
+          gridTemplateRows: "auto",
+          ...(drawerOpen
+            ? {
+                gridTemplateColumns: {
+                  xs: "auto",
+                  md: `auto ${drawerMaxWidth}px`,
+                  lg: `auto ${drawerMaxWidth}px`,
+                },
+              }
+            : {
+                gridTemplateColumns: {
+                  xs: "auto",
+                  md: `auto ${drawerMinWidth}px`,
+                  lg: `auto ${drawerMinWidth}px`,
+                },
+              }),
+        }}
+      >
+        <Box
+          component="div"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: {
+              xs: "calc(100vh - 48px);",
+              md: "calc(100vh - 48px)",
+              lg: "calc(100vh - 48px)",
+            },
+          }}
+        >
+          {live.current && (
+            <Video
+              startLiveDate={live.current.live_date}
+              errorImage={live.current.error_image}
+              preLiveImage={live.current.pre_live_image}
+              soruce={live.current.live_url}
+              maxHeight="calc(100vh - 48px - 75px)"
+            />
+          )}
+
+          <LiveCard />
+
+          {renderSectionChat(drawerOpen, false)}
+        </Box>
+        <Drawer
+          open={drawerOpen}
+          variant="permanent"
+          anchor="right"
+          sx={{ display: { xs: "none", md: "block", lg: "block" } }}
+        >
+          <DrawerHeader />
+          <Toolbar variant="dense">
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              color="inherit"
+              onClick={() => setDrawerOpen(!drawerOpen)}
+            >
+              {renderDrawButton(drawerOpen)}
+            </IconButton>
+            <Typography
+              variant="subtitle1"
+              color="inherit"
+              align="center"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+              STREAM CHAT
+            </Typography>
+          </Toolbar>
+          <Divider />
+
+          {renderSectionChat(drawerOpen, true)}
+        </Drawer>
+      </Box>
     </Fragment>
   );
 }

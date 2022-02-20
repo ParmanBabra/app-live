@@ -1,5 +1,13 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  getDefaultMiddleware,
+  ThunkAction,
+  Action,
+} from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
+import userReducer from "../features/login/userSlice";
+import liveReducer from "../features/admin-live/liveSlice";
+import appReducer from "../features/app/AppSlice";
 
 // import { createStore, combineReducers, compose } from "redux";
 // import { reduxFirestore, firestoreReducer } from "redux-firestore";
@@ -34,13 +42,22 @@ firebase.initializeApp(firebaseConfig);
 firebase.firestore();
 
 const rootReducer = combineReducers({
+  app: appReducer,
+  user: userReducer,
+  live: liveReducer,
   counter: counterReducer,
   firebase: firebaseReducer,
-  firestore: firestoreReducer, // <- needed if using firestore
+  firestore: firestoreReducer,
 });
 
 const initialState = {};
-export const store = createStore(rootReducer, initialState);
+// export const store = createStore(rootReducer, initialState);
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware({
+    serializableCheck: false,
+  }),
+});
 
 export const rrfProps = {
   firebase: firebase,

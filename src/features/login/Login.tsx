@@ -1,43 +1,75 @@
-import { useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Fade, Modal, Paper, Backdrop } from "@mui/material";
+import { Fade, Modal, Paper, Backdrop, SxProps, Theme } from "@mui/material";
+import { RootState } from "../../app/store";
+import { LoginForm } from "./LoginForm";
+import { RegisterForm } from "./RegisterForm";
+import { RegisterRequest } from "./model";
+import { register } from "./userSlice";
 
-
-const style = {
+const style: SxProps<Theme> = {
   position: "absolute" as "absolute",
   top: "50%",
   left: "50%",
-  transform: "translate(-50%, -70%)",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  marginTop: 8,
+  height: { xs: "100%", md: "auto", lg: "auto" },
   p: 4,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
 };
 
-export interface LoginProps {
-  open: boolean;
-}
+export interface LoginProps {}
 
 export default function Login(props: LoginProps) {
-  const [Open, setOpen] = useState(props.open);
+  const user = useSelector((state: RootState) => state.user);
+  const [Open, setOpen] = useState(!user.isLogin);
+  const [state, setState] = useState(0);
+  const dispatch = useDispatch();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmitLogin = () => {
     setOpen(false);
   };
+
+  const handleRegister = () => {
+    setState(1);
+  };
+
+  const handleBack = () => {
+    setState(0);
+  };
+
+  const handleSubmitRegister = async (data: RegisterRequest) => {
+    await dispatch(register(data));
+    setState(0);
+    setOpen(false);
+  };
+
+  const renderForms = (state: number) => {
+    if (state === 0) {
+      return (
+        <LoginForm onLogin={handleSubmitLogin} onRegister={handleRegister} />
+      );
+    } else if (state === 1) {
+      return (
+        <RegisterForm onRegister={handleSubmitRegister} onBack={handleBack} />
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (user.isLogin) {
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  }, [user.isLogin]);
 
   return (
     <Modal
       open={Open}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
@@ -46,61 +78,7 @@ export default function Login(props: LoginProps) {
     >
       <Fade in={Open}>
         <Paper sx={style} elevation={2}>
-          <Avatar
-            sx={{ m: 1, width: 52, height: 52, bgcolor: "secondary.main" }}
-          >
-            N
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Login
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="username"
-              label="Username"
-              type="text"
-              id="username"
-              autoComplete="username"
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="tel"
-              label="Phone Number"
-              name="tel"
-              autoComplete="tel"
-              autoFocus
-            />
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Login
-            </Button>
-          </Box>
+          {renderForms(state)}
         </Paper>
       </Fade>
     </Modal>
