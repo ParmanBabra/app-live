@@ -26,7 +26,7 @@ export const GrantUsersTable = (props: Props) => {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Email</TableCell>
+            <TableCell>Register Email</TableCell>
             <TableCell align="right">First Name</TableCell>
             <TableCell align="right">Last Name</TableCell>
             <TableCell align="right">Organization</TableCell>
@@ -36,11 +36,11 @@ export const GrantUsersTable = (props: Props) => {
         <TableBody>
           {data.map((row: UserExcelData) => (
             <TableRow
-              key={row.email}
+              key={row.register_email}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.email}
+                {row.register_email}
               </TableCell>
               <TableCell align="right">{firstName(row)}</TableCell>
               <TableCell align="right">{lastName(row)}</TableCell>

@@ -3,6 +3,7 @@ import { Chat } from "../live/model";
 export type UserExcelData = {
   date: Date;
   email: string;
+  register_email: string;
   name: string;
   organization: string;
   tel: string;
@@ -24,6 +25,7 @@ export type StartLiveUpdateData = {
   pre_live_image: string;
   channel_image: string;
   grant_users: string[];
+  register_users: string[];
   watching_count: number;
   watching_users: string[];
 };
@@ -33,11 +35,24 @@ export type ChatsInfomation = {
   chats: Chat[];
 };
 
+export type RegisterUser = {
+  email: string;
+  first_name: string;
+  last_name: string;
+  organization: string;
+  tel: string;
+};
+
+export type RegisterUsersInfomation = {
+  liveTitle: string;
+  registerUsers: RegisterUser[];
+};
+
 export const excelMap = {
   Timestamp: "date",
   "Email Address": "email",
   "ชื่อ - นามสกุล": "name",
-  อีเมล์สำหรับเข้าชมงาน: "email",
+  อีเมล์สำหรับเข้าชมงาน: "register_email",
   หน่วยงาน: "organization",
   หมายเลขโทรศัพท์: "tel",
 };

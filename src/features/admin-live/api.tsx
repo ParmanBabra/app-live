@@ -9,12 +9,16 @@ import {
   updateDoc,
   deleteField,
   deleteDoc,
+  where,
+  query,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import {
   ChatsInfomation,
   firstName,
   lastName,
+  RegisterUser,
+  RegisterUsersInfomation,
   StartLiveData,
   StartLiveUpdateData,
   UserExcelData,
@@ -43,15 +47,20 @@ export const upsertUsers = async (
   let emails = [];
 
   for (const user of users) {
-    const refDoc = doc(db, "user-infomations", user.email);
+    const refDoc = doc(db, "user-infomations", user.register_email);
+    let docUser = await getDoc(refDoc);
+    let userData: any = docUser.data();
+
     await setDoc(refDoc, {
-      first_name: firstName(user),
-      last_name: lastName(user),
-      name: user.name,
-      organization: user.organization,
-      tel: user.tel,
-      email: user.email,
-      is_admin: false,
+      ...userData,
+      ...{
+        first_name: firstName(user),
+        last_name: lastName(user),
+        name: user.name,
+        organization: user.organization,
+        tel: user.tel,
+        email: user.register_email,
+      },
     });
     emails.push(user.email);
   }
@@ -88,6 +97,7 @@ export const startNewLiveApi = async () => {
     error_image: null,
     pre_live_image: null,
     grant_users: [],
+    register_users: [],
     watching_count: null,
     watching_users: [],
     step: 0,
@@ -120,14 +130,50 @@ export const getChats = async (): Promise<ChatsInfomation> => {
   };
 };
 
+export const getRegisterUsers = async (): Promise<RegisterUsersInfomation> => {
+  const db = getFirestore();
+  const refDoc = doc(db, "live", "current");
+  const docLive = await getDoc(refDoc);
+
+  let live: any = docLive.data();
+  let register_users = live.register_users as string[];
+
+  const refUsers = collection(db, "user-infomations");
+  const q = query(refUsers, where("email", "in", register_users));
+
+  const querySnapshot = await getDocs(q);
+
+  const registerUsers: RegisterUser[] = querySnapshot.docs.map((x) => {
+    let data = x.data();
+    return {
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      organization: data.organization,
+      tel: data.tel,
+    };
+  });
+
+  return {
+    liveTitle: live.title as string,
+    registerUsers: registerUsers,
+  };
+};
+
 export const grantApi = async (email: string) => {
   let db = getFirestore();
   let docRef = doc(db, "live", "current");
   let ref = await getDoc(docRef);
   let live: any = ref.data();
-  live.grant_users.push(email);
+  let grant_users: string[] = live.grant_users;
+  let register_users: string[] = live.register_users;
+  if (!grant_users.includes(email)) grant_users.push(email);
+  if (!register_users.includes(email)) register_users.push(email);
 
-  await updateDoc(docRef, { grant_users: live.grant_users });
+  await updateDoc(docRef, {
+    grant_users: grant_users,
+    register_users: register_users,
+  });
 };
 
 export const checkPermissionApi = async (email: string): Promise<boolean> => {

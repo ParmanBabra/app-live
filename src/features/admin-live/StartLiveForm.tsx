@@ -135,6 +135,7 @@ export const StartLiveForm: FunctionComponent<{
   };
 
   const handleValidateStreamUrl = () => {
+    console.log("ok")
     const values = getValues();
     const url = values.liveUrl;
     const valid = ReactPlayer.canPlay(url);

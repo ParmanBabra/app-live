@@ -18,13 +18,13 @@ import SendIcon from "@mui/icons-material/Send";
 
 import { RootState } from "../../app/store";
 
-import "./Live.css";
 import simpleImage from "./../../images/live-streaming.png";
 import LiveCard from "./LiveCard";
 import { CSSObject, Theme } from "@mui/material";
 import Video from "./Video";
 import { Chat } from "./model";
 import { LiveNotStart } from "./LiveNotStart";
+import "./Live.css";
 
 const drawerMaxWidth = 375;
 const drawerMinWidth = 75;
@@ -260,7 +260,7 @@ function Live() {
 
   if (!live) return <Fragment></Fragment>;
 
-  if (live.current.step === 0) {
+  if (live.current.step === 0 || live.current.step === 2) {
     return (
       <Fragment>
         <LiveNotStart />

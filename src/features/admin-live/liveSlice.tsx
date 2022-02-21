@@ -2,12 +2,18 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   endLiveApi,
   getChats,
+  getRegisterUsers,
   startLiveApi,
   startNewLiveApi,
   uploadLiveFile,
   upsertUsers,
 } from "./api";
-import { StartLiveData, StartLiveUpdateData, UserExcelData } from "./model";
+import {
+  RegisterUser,
+  StartLiveData,
+  StartLiveUpdateData,
+  UserExcelData,
+} from "./model";
 import writeXlsxFile from "write-excel-file";
 import { Chat } from "../live/model";
 
@@ -60,6 +66,7 @@ export const startLive = createAsyncThunk<void, StartLiveRequest>(
       pre_live_image: preLiveImageUrl,
       channel_image: channelImageUrl,
       grant_users: grant_users,
+      register_users: [],
       watching_count: 0,
       watching_users: [],
     };
@@ -79,6 +86,54 @@ export const startNewLive = createAsyncThunk<void, void>(
   "live/start_new",
   async (request, thunkApi) => {
     await startNewLiveApi();
+  }
+);
+
+export const exportRegisterUsers = createAsyncThunk<void, void>(
+  "live/export-chats",
+  async (request, thunkApi) => {
+    const live = await getRegisterUsers();
+
+    const schema = [
+      // Column #1
+      {
+        column: "email",
+        type: String,
+        value: (x: RegisterUser) => x.email,
+        width: 30,
+      },
+      {
+        column: "First Name", // Column title
+        type: String,
+        value: (x: RegisterUser) => x.first_name,
+        width: 30,
+      },
+      {
+        column: "Last Name", // Column title
+        type: String,
+        value: (x: RegisterUser) => x.last_name,
+      },
+      {
+        column: "Organization", // Column title
+        type: String,
+        value: (x: RegisterUser) => x.organization,
+      },
+      {
+        column: "Phonenumber", // Column title
+        type: String,
+        value: (x: RegisterUser) => x.tel,
+      },
+    ];
+
+    try {
+      console.log(live.registerUsers);
+      await writeXlsxFile(live.registerUsers, {
+        schema: schema,
+        fileName: `register_users_${live.liveTitle.replace(" ", "_")}.xlsx`,
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 );
 
