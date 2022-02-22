@@ -64,7 +64,7 @@ export const LoginForm: FunctionComponent<{
           autoComplete="email"
           autoFocus
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value.trim())}
           error={error != null}
           helperText={error}
         />

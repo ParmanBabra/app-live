@@ -28,12 +28,12 @@ export const registerApi = async (
 ): Promise<RegisterResult> => {
   let db = getFirestore();
 
-  let docUser = doc(db, "user-infomations", request.email.toLowerCase());
+  let docUser = doc(db, "user-infomations", request.email.trim().toLowerCase());
   let refUser = await getDoc(docUser);
   let dataUser = refUser.data();
 
   let user: any = {
-    email: request.email.toLowerCase(),
+    email: request.email.trim().toLowerCase(),
     first_name: request.firstName,
     last_name: request.lastName,
     name: `${request.firstName} ${request.lastName}`,
@@ -47,7 +47,7 @@ export const registerApi = async (
   };
 
   await setDoc(
-    doc(db, "user-infomations", request.email.toLowerCase()),
+    doc(db, "user-infomations", request.email.trim().toLowerCase()),
     result
   );
 

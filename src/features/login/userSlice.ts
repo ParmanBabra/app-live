@@ -46,7 +46,7 @@ export const register = createAsyncThunk<RegisterResult, RegisterRequest>(
   "user/register",
   async (request, thunkApi) => {
     let result = await registerApi(request);
-    await grantApi(result.email.toLowerCase());
+    await grantApi(result.email.trim().toLowerCase());
 
     return result;
   }
