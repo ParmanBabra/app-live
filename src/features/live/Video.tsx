@@ -1,15 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-// import videojs from "video.js";
-// import "videojs-mobile-ui";
-// import "video.js/dist/video-js.css";
-// import Plyr, { APITypes, PlyrProps, PlyrInstance } from "plyr-react";
-// import "plyr-react/dist/plyr.css";
 import { Box, SxProps, Theme } from "@mui/material";
-// import Hls from "hls.js";
 
-import ReactPlayer from "react-player";
+import { ErrorTypes } from "hls.js";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
+
+import "./Video.css";
+
+const OvenPlayer = require("ovenplayer");
 
 interface Props {
   maxHeight?: string;
@@ -21,8 +19,9 @@ interface Props {
 
 export const Video = (props: Props) => {
   const user = useSelector((state: RootState) => state.user);
+  const [player, setPlayer] = useState<any>();
   const playerRef = React.useRef<any>(null);
-  let iamge: string = "";
+  let image: string = "";
 
   const getDiffTick = (props: Props) => {
     const now: Date = new Date();
@@ -34,12 +33,8 @@ export const Video = (props: Props) => {
 
   let diffDate = getDiffTick(props);
 
-  if (!ReactPlayer.canPlay(props.soruce)) {
-    iamge = props.errorImage;
-  }
-
   if (diffDate > 0) {
-    iamge = props.preLiveImage;
+    image = props.preLiveImage;
   }
 
   const [living, setLiving] = useState(diffDate <= 0);
@@ -55,6 +50,29 @@ export const Video = (props: Props) => {
     }, 1000);
   }, [living]);
 
+  useEffect(() => {
+    if (!living) return;
+
+    const player = OvenPlayer.create(playerRef.current.id, {
+      autoStart: true,
+      autoFallback: true,
+      mute: true,
+      sources: [
+        {
+          type: "hls",
+          file: props.soruce,
+        },
+      ],
+      webrtcConfig: {
+        timeoutMaxRetry: 4,
+        connectionTimeout: 10000,
+        playoutDelayHint: 10,
+      },
+    });
+
+    setPlayer(player);
+  }, [props.soruce, living]);
+
   return (
     <Box
       component="div"
@@ -63,41 +81,14 @@ export const Video = (props: Props) => {
         maxWidth: "100%",
       }}
     >
-      {iamge != "" ? (
+      {image != "" ? (
         <img
-          src={iamge}
+          src={image}
           alt="Error Image"
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         ></img>
       ) : (
-        <ReactPlayer
-          ref={playerRef}
-          url={props.soruce}
-          muted
-          playing={user.isLogin}
-          controls
-          width="100%"
-          height="100%"
-          onReady={(e) => {
-            //   e.player.player.player.play();
-            //   const video: HTMLVideoElement = e.player.player.player;
-            //   console.dir(video);
-            //   video.play();
-          }}
-          onError={(e) => {
-            console.log(e);
-          }}
-          config={{
-            file: {
-              hlsOptions: {
-                autoStartLoad: true,
-              },
-              forceHLS: true,
-              hlsVersion: "1.1.5",
-            },
-          }}
-          style={{ backgroundColor: "#000" }}
-        />
+        <div ref={playerRef} id="player"></div>
       )}
     </Box>
   );

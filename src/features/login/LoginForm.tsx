@@ -15,9 +15,11 @@ import { login } from "./userSlice";
 
 type EventHandler = () => void;
 
+type RegisterEventHandler = (message: string) => void;
+
 export const LoginForm: FunctionComponent<{
   onLogin: EventHandler;
-  onRegister: EventHandler;
+  onRegister: RegisterEventHandler;
 }> = ({ onLogin, onRegister }) => {
   const user = useSelector((state: RootState) => state.user);
 
@@ -40,8 +42,8 @@ export const LoginForm: FunctionComponent<{
       setRememberMe(false);
       onLogin();
     } else if (result.type.includes("rejected")) {
-      // setOpen(false);
-      setError(result.error.message);
+      // setError(result.error.message);
+      onRegister(result.error.message);
     }
   };
 
@@ -86,10 +88,6 @@ export const LoginForm: FunctionComponent<{
           sx={{ mt: 2, mb: 1 }}
         >
           Login
-        </Button>
-
-        <Button type="button" fullWidth variant="outlined" onClick={onRegister}>
-          Register
         </Button>
       </Box>
     </Fragment>

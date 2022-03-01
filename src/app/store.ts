@@ -17,21 +17,21 @@ import appReducer from "../features/app/AppSlice";
 
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import "firebase/compat/firestore"; // <- needed if using firestore
+import "firebase/compat/firestore";
+
 import { createStore, combineReducers } from "redux";
 import { firebaseReducer } from "react-redux-firebase";
 import { createFirestoreInstance, firestoreReducer } from "redux-firestore"; //
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCdcu_2VyDQmQxK6KuC9fRWFSZh8w3grSU",
-  authDomain: "app-live-36e59.firebaseapp.com",
-  databaseURL:
-    "https://app-live-36e59-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "app-live-36e59",
-  storageBucket: "app-live-36e59.appspot.com",
-  messagingSenderId: "381229955097",
-  appId: "1:381229955097:web:b0696262749efbdb055288",
-  measurementId: "G-PS5X0QZMYH",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId:process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 const rrfConfig = {

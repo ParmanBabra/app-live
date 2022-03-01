@@ -19,6 +19,7 @@ const style: SxProps<Theme> = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
+  overflow: "auto",
 };
 
 export interface LoginProps {}
@@ -26,6 +27,7 @@ export interface LoginProps {}
 export default function Login(props: LoginProps) {
   const user = useSelector((state: RootState) => state.user);
   const [Open, setOpen] = useState(!user.isLogin);
+  const [registerMessage, setRegisterMessage] = useState<string | null>(null);
   const [state, setState] = useState(0);
   const dispatch = useDispatch();
 
@@ -33,8 +35,9 @@ export default function Login(props: LoginProps) {
     setOpen(false);
   };
 
-  const handleRegister = () => {
+  const handleRegister = (message: string) => {
     setState(1);
+    setRegisterMessage(message);
   };
 
   const handleBack = () => {
@@ -54,7 +57,11 @@ export default function Login(props: LoginProps) {
       );
     } else if (state === 1) {
       return (
-        <RegisterForm onRegister={handleSubmitRegister} onBack={handleBack} />
+        <RegisterForm
+          onRegister={handleSubmitRegister}
+          onBack={handleBack}
+          message={registerMessage}
+        />
       );
     }
   };

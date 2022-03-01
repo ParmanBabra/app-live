@@ -16,7 +16,7 @@ import Live from "./features/live/Live";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./app/store";
 import { logout } from "./features/login/userSlice";
-import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
+import { ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { UserState } from "./features/login/model";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { AdminLive } from "./features/admin-live/AdminLive";
@@ -26,6 +26,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
+
+import logo from "./images/Logo.svg";
+import "./App.css"
 
 function App() {
   const user = useSelector((state: RootState) => state.user);
@@ -58,13 +62,16 @@ function App() {
 
     return (
       <Fragment>
-        <Typography variant="h6" color="inherit" noWrap>
+        <Typography
+          variant="h6"
+          color="inherit"
+          noWrap
+          sx={{ display: { xs: "none", md: "inline", lg: "inline" } }}
+        >
           {user.name}
         </Typography>
-        <IconButton sx={{ ml: 2 }} onClick={handleMenu}>
-          <Avatar sx={{ width: 32, height: 32 }}>
-            <PersonIcon />
-          </Avatar>
+        <IconButton sx={{ ml: 2, color: "#FFF" }} onClick={handleMenu}>
+          <MenuIcon />
         </IconButton>
 
         <Menu
@@ -96,16 +103,6 @@ function App() {
               Admin Live
             </MenuItem>
           )}
-          <MenuItem onClick={() => dispatch(toggleShowName())}>
-            <ListItemIcon>
-              {app.isShowName ? (
-                <CheckBoxIcon color="primary" />
-              ) : (
-                <CheckBoxOutlineBlankIcon />
-              )}
-            </ListItemIcon>
-            Show Name
-          </MenuItem>
           <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <LogoutIcon />
@@ -124,7 +121,17 @@ function App() {
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar variant="dense">
-          <FlutterDashIcon sx={{ mr: 2 }} />
+          <Avatar
+            src={logo}
+            variant="rounded"
+            className="logo"
+            sx={{
+              marginRight: 2,
+              backgroundColor: "white",
+              padding: "5px",
+              objectFit: "contain",
+            }}
+          />
           <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
             Event Live
           </Typography>

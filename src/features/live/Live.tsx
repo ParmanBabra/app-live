@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
 
 import Divider from "@mui/material/Divider";
@@ -11,6 +11,8 @@ import IconButton from "@mui/material/IconButton";
 import MuiDrawer from "@mui/material/Drawer";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
@@ -20,11 +22,18 @@ import { RootState } from "../../app/store";
 
 import simpleImage from "./../../images/live-streaming.png";
 import LiveCard from "./LiveCard";
-import { CSSObject, Theme } from "@mui/material";
+import {
+  Checkbox,
+  CSSObject,
+  FormControlLabel,
+  FormGroup,
+  Theme,
+} from "@mui/material";
 import Video from "./Video";
 import { Chat } from "./model";
 import { LiveNotStart } from "./LiveNotStart";
 import "./Live.css";
+import { toggleShowName } from "../app/AppSlice";
 
 const drawerMaxWidth = 375;
 const drawerMinWidth = 75;
@@ -87,6 +96,7 @@ function Live() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [firstLoad, setFirstLoad] = useState(true);
+  const dispatch = useDispatch();
 
   useFirestoreConnect([
     {
@@ -136,12 +146,13 @@ function Live() {
   }, [firstLoad, user.isLogin]);
 
   const handleOnSend = () => {
+    if (message.trim() === "") return;
     setMessage("");
 
     const chatMessage: Chat = {
       email: user.email as string,
       username: app.isShowName ? (user.firstName as string) : "ไม่ระบุชื่อ",
-      message: message,
+      message: message.trim(),
       create_date: new Date(),
     };
     return firestore
@@ -210,6 +221,20 @@ function Live() {
             : ""}
         </Box>
         <Divider />
+        <FormGroup>
+          <FormControlLabel
+            sx={{ marginLeft: 0, ...displayStyleTextBox }}
+            control={
+              <Checkbox
+                value={app.isShowName}
+                onChange={() => dispatch(toggleShowName())}
+                defaultChecked={app.isShowName}
+              />
+            }
+            label="Show Name"
+          />
+        </FormGroup>
+        <Divider sx={{ ...displayStyleTextBox }} />
         <Paper
           sx={{
             p: "2px 4px",

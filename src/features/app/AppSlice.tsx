@@ -4,7 +4,7 @@ import { AppState } from "./model";
 let userJson: string | null = localStorage.getItem("app");
 let init: any = JSON.parse(userJson ? userJson : `{}`);
 
-const initialState: AppState = init as AppState;
+const initialState: AppState = { ...{ isShowName: true }, ...init } as AppState;
 
 const updateState = (state: AppState) => {
   let json = JSON.stringify(state);

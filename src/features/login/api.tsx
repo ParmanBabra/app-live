@@ -12,7 +12,7 @@ import { LoginResult, RegisterRequest, RegisterResult } from "./model";
 
 export const loginApi = async (email: string) => {
   let db = getFirestore();
-  let docRef = doc(db, "user-infomations", email.toLowerCase());
+  let docRef = doc(db, "user-infomations", email.trim().toLowerCase());
   let ref = await getDoc(docRef);
   let user = ref.data();
 

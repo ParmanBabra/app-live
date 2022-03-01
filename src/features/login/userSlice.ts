@@ -17,10 +17,10 @@ const initialState: UserState = init as UserState;
 export const login = createAsyncThunk<LoginResult | null, LoginRequest>(
   "user/login",
   async (request, thunkApi) => {
-    const response = await loginApi(request.email.toLowerCase());
+    const response = await loginApi(request.email.trim().toLowerCase());
     if (!response) throw "Email address not found";
 
-    const permission = await checkPermissionApi(request.email.toLowerCase());
+    const permission = await checkPermissionApi(request.email.trim().toLowerCase());
 
     if (!permission)
       throw "Email address cannot access to live. Please register";

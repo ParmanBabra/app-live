@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -14,11 +15,11 @@ import { RegisterRequest } from "./model";
 type EventHandler = () => void;
 type SubmitHandler = (data: RegisterRequest) => void;
 
-
 export const RegisterForm: FunctionComponent<{
   onBack: EventHandler;
   onRegister: SubmitHandler;
-}> = ({ onBack, onRegister }) => {
+  message: string | null;
+}> = ({ onBack, onRegister, message }) => {
   const {
     control,
     handleSubmit,
@@ -33,6 +34,7 @@ export const RegisterForm: FunctionComponent<{
       <Typography component="h1" variant="h5">
         Register
       </Typography>
+      <Alert severity="error">{message}</Alert>
       <Box
         component="form"
         onSubmit={handleSubmit(onRegister)}

@@ -16,7 +16,6 @@ import { GrantUsersTable } from "./GrantUsersTable";
 import { Cancel, CheckCircle } from "@mui/icons-material";
 import { excelMap, StartLiveData, UserExcelData } from "./model";
 import readXlsxFile from "read-excel-file";
-import ReactPlayer from "react-player";
 import { PreviewImage } from "./PreviewImage";
 import { Box } from "@mui/system";
 
@@ -114,7 +113,7 @@ export const StartLiveForm: FunctionComponent<{
     if (e.target.files.length == 0) return;
 
     const file: File = e.target.files[0];
-    files[3] = file;
+    files[2] = file;
 
     setFiles(files);
     const reader = new FileReader();
@@ -135,12 +134,7 @@ export const StartLiveForm: FunctionComponent<{
   };
 
   const handleValidateStreamUrl = () => {
-    console.log("ok")
-    const values = getValues();
-    const url = values.liveUrl;
-    const valid = ReactPlayer.canPlay(url);
-
-    setValidateStream(valid);
+    setValidateStream(true);
   };
 
   return (

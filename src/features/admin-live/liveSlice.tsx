@@ -16,6 +16,8 @@ import {
 } from "./model";
 import writeXlsxFile from "write-excel-file";
 import { Chat } from "../live/model";
+import { getStorage } from "firebase/storage";
+import { rrfProps } from "../../app/store";
 
 const initialState = {};
 
@@ -34,6 +36,10 @@ export const startLive = createAsyncThunk<void, StartLiveRequest>(
     let preLiveImageUrl = null;
     let errorImageUrl = null;
     let channelImageUrl = null;
+
+    // let e = getStorage(rrfProps.firebase.apps[0], "stream-starting-soon.jpg");
+
+    // console.log(e);
 
     if (!request.preLiveImage) {
       preLiveImageUrl =
