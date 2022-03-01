@@ -1,6 +1,8 @@
 import { Fragment, FunctionComponent, useState } from "react";
 import { DesktopDateTimePicker } from "@mui/lab";
 import {
+  Alert,
+  AlertTitle,
   Button,
   Grid,
   IconButton,
@@ -38,6 +40,8 @@ export const StartLiveForm: FunctionComponent<{
   } = useForm<StartLiveData>();
 
   const [validateStream, setValidateStream] = useState<boolean>(false);
+  const [validateGrantUsers, setValidateGrantUsers] = useState<boolean>(true);
+  const [errorsGrantUser, setErrorsGrantUser] = useState<string[]>([]);
   const [users, setUsers] = useState<UserExcelData[]>([]);
   const [preLiveImage, setPreLiveImage] = useState<string | null>(
     "https://firebasestorage.googleapis.com/v0/b/app-live-36e59.appspot.com/o/stream-starting-soon.jpg?alt=media&token=0a808da2-9fa5-4adb-8fe1-3c1067a80818"
@@ -58,9 +62,20 @@ export const StartLiveForm: FunctionComponent<{
 
   const handleSelectGrantUsers = async (e: any) => {
     if (e.target.files.length == 0) return;
-    let rows = await readXlsxFile(e.target.files[0], { map: excelMap });
+    let rows = await readXlsxFile(e.target.files[0], { schema: excelMap });
+    if (rows.errors.length != 0) {
+      let errors = rows.errors.map((x) => `(${x.row}) ${x.error}: ${x.value} `);
+
+      setUsers([]);
+      setValidateGrantUsers(false);
+      setErrorsGrantUser(errors);
+      return;
+    }
+
     let users = rows.rows as UserExcelData[];
     setUsers(users);
+    setValidateGrantUsers(true);
+    setErrorsGrantUser([]);
   };
 
   const handleSelectPreLiveImage = async (e: any) => {
@@ -358,6 +373,14 @@ export const StartLiveForm: FunctionComponent<{
           </label>
         </Grid>
         <Grid item xs={12} sm={12}>
+          {!validateGrantUsers && (
+            <Alert severity="error" style={{ marginBottom: "10px" }}>
+              <AlertTitle>Error</AlertTitle>
+              {errorsGrantUser.map((message, index) => (
+                <div key={index}>{message}</div>
+              ))}
+            </Alert>
+          )}
           <GrantUsersTable data={users} />
         </Grid>
         <Grid item xs={12} sm={12} sx={{ mt: 1 }}>

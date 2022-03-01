@@ -12,6 +12,7 @@ import React, { Fragment, FunctionComponent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { login } from "./userSlice";
+import { emailValidate } from "../../app/helper";
 
 type EventHandler = () => void;
 
@@ -36,6 +37,11 @@ export const LoginForm: FunctionComponent<{
       return;
     }
 
+    if (!emailValidate.test(email)) {
+      setError("Email is invalid format.");
+      return;
+    }
+    
     let result: any = await dispatch(login({ email, rememberMe }));
     if (result.type.includes("fulfilled")) {
       setEmail("");

@@ -1,3 +1,4 @@
+import { emailValidate } from "../../app/helper";
 import { Chat } from "../live/model";
 
 export type UserExcelData = {
@@ -49,12 +50,34 @@ export type RegisterUsersInfomation = {
 };
 
 export const excelMap = {
-  Timestamp: "date",
-  "Email Address": "email",
-  "ชื่อ - นามสกุล": "name",
-  อีเมล์สำหรับเข้าชมงาน: "register_email",
-  หน่วยงาน: "organization",
-  หมายเลขโทรศัพท์: "tel",
+  Timestamp: {
+    prop: "date",
+  },
+  "Email Address": {
+    prop: "email",
+  },
+  "ชื่อ - นามสกุล": {
+    prop: "name",
+  },
+  อีเมล์สำหรับเข้าชมงาน: {
+    prop: "register_email",
+    required: true,
+    // A custom `type` can be defined.
+    // A `type` function only gets called for non-empty cells.
+    type: (value: any) => {
+      const valid = emailValidate.test(value);
+      if (!valid) {
+        throw new Error("Email is invalid");
+      }
+      return value;
+    },
+  },
+  หน่วยงาน: {
+    prop: "organization",
+  },
+  หมายเลขโทรศัพท์: {
+    prop: "tel",
+  },
 };
 
 export const firstName = (user: UserExcelData): string => {

@@ -11,6 +11,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import React, { Fragment, FunctionComponent } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { RegisterRequest } from "./model";
+import { emailValidate } from "../../app/helper";
 
 type EventHandler = () => void;
 type SubmitHandler = (data: RegisterRequest) => void;
@@ -25,6 +26,7 @@ export const RegisterForm: FunctionComponent<{
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterRequest>();
+
 
   return (
     <Fragment>
@@ -84,7 +86,13 @@ export const RegisterForm: FunctionComponent<{
             name="email"
             defaultValue=""
             control={control}
-            rules={{ required: "Email is required" }}
+            rules={{
+              required: "Email is required",
+              pattern: {
+                value: emailValidate,
+                message: "Email is invalid format.",
+              },
+            }}
             render={({ field }) => (
               <TextField
                 {...field}
