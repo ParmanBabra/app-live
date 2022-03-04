@@ -19,7 +19,9 @@ import { Chat } from "../live/model";
 import { getStorage } from "firebase/storage";
 import { rrfProps } from "../../app/store";
 
-const initialState = {};
+const initialState = {
+  loading: false,
+};
 
 type StartLiveRequest = {
   data: StartLiveData;
@@ -193,7 +195,15 @@ export const userSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {},
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(startLive.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(startLive.pending, (state, action) => {
+        state.loading = true;
+      });
+  },
 });
 
 export const {} = userSlice.actions;

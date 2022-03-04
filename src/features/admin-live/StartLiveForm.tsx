@@ -1,5 +1,5 @@
 import { Fragment, FunctionComponent, useState } from "react";
-import { DesktopDateTimePicker } from "@mui/lab";
+import { DesktopDateTimePicker, LoadingButton } from "@mui/lab";
 import {
   Alert,
   AlertTitle,
@@ -20,6 +20,9 @@ import { excelMap, StartLiveData, UserExcelData } from "./model";
 import readXlsxFile from "read-excel-file";
 import { PreviewImage } from "./PreviewImage";
 import { Box } from "@mui/system";
+import _ from "lodash";
+import { RootState } from "../../app/store";
+import { useSelector } from "react-redux";
 
 type SubmitedHandler = (
   data: StartLiveData,
@@ -39,6 +42,7 @@ export const StartLiveForm: FunctionComponent<{
     getValues,
   } = useForm<StartLiveData>();
 
+  const loading = useSelector((state: RootState) => state.live.loading);
   const [validateStream, setValidateStream] = useState<boolean>(false);
   const [validateGrantUsers, setValidateGrantUsers] = useState<boolean>(true);
   const [errorsGrantUser, setErrorsGrantUser] = useState<string[]>([]);
@@ -73,6 +77,8 @@ export const StartLiveForm: FunctionComponent<{
     }
 
     let users = rows.rows as UserExcelData[];
+    users = _.values(_.keyBy(users, "register_email")) as UserExcelData[];
+
     setUsers(users);
     setValidateGrantUsers(true);
     setErrorsGrantUser([]);
@@ -384,7 +390,8 @@ export const StartLiveForm: FunctionComponent<{
           <GrantUsersTable data={users} />
         </Grid>
         <Grid item xs={12} sm={12} sx={{ mt: 1 }}>
-          <Button
+          <LoadingButton
+            loading={loading}
             type="submit"
             fullWidth
             variant="contained"
@@ -392,7 +399,7 @@ export const StartLiveForm: FunctionComponent<{
             startIcon={<VideocamIcon />}
           >
             Live
-          </Button>
+          </LoadingButton>
         </Grid>
       </Grid>
     </Fragment>

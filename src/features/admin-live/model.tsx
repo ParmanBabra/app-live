@@ -58,6 +58,8 @@ export const excelMap = {
   },
   "ชื่อ - นามสกุล": {
     prop: "name",
+    required: true,
+    type: String
   },
   อีเมล์สำหรับเข้าชมงาน: {
     prop: "register_email",
@@ -86,7 +88,7 @@ export const firstName = (user: UserExcelData): string => {
 
 export const lastName = (user: UserExcelData): string => {
   const names = user.name.split(" ");
-  if (names.length == 1) {
+  if (names.length <= 1) {
     return "";
   }
 

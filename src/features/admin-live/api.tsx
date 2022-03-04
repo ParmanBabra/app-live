@@ -23,6 +23,7 @@ import {
   StartLiveUpdateData,
   UserExcelData,
 } from "./model";
+import _ from "lodash";
 import { Chat } from "../live/model";
 
 export const uploadLiveFile = async (file: File): Promise<string> => {
@@ -50,8 +51,7 @@ export const upsertUsers = async (
     const refDoc = doc(db, "user-infomations", user.register_email);
     let docUser = await getDoc(refDoc);
     let userData: any = docUser.data();
-
-    await setDoc(refDoc, {
+    let data = {
       ...userData,
       ...{
         first_name: firstName(user),
@@ -61,8 +61,13 @@ export const upsertUsers = async (
         tel: user.tel,
         email: user.register_email,
       },
-    });
-    emails.push(user.email);
+    };
+
+    data = _.omitBy(data, _.isNil);
+
+    console.log(data);
+    await setDoc(refDoc, data);
+    emails.push(data.email);
   }
 
   return emails;
