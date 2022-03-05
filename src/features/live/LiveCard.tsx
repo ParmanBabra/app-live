@@ -22,8 +22,6 @@ export default function LiveCard() {
 
   if (!live) return <React.Fragment></React.Fragment>;
 
-  console.log(live);
-
   let createDate = moment.unix(live.current.live_date.seconds);
   let show_watching_users = live.current.show_watching_users as boolean;
 
