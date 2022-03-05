@@ -15,6 +15,7 @@ export type StartLiveData = {
   createDate: Date;
   liveDate?: Date | null;
   liveUrl: string;
+  showWatchingUser: boolean;
 };
 
 export type StartLiveUpdateData = {
@@ -29,6 +30,7 @@ export type StartLiveUpdateData = {
   register_users: string[];
   watching_count: number;
   watching_users: string[];
+  show_watching_users: boolean;
 };
 
 export type ChatsInfomation = {
@@ -59,7 +61,7 @@ export const excelMap = {
   "ชื่อ - นามสกุล": {
     prop: "name",
     required: true,
-    type: String
+    type: String,
   },
   อีเมล์สำหรับเข้าชมงาน: {
     prop: "register_email",

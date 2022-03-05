@@ -77,6 +77,7 @@ export const startLive = createAsyncThunk<void, StartLiveRequest>(
       register_users: [],
       watching_count: 0,
       watching_users: [],
+      show_watching_users: data.showWatchingUser,
     };
 
     await startLiveApi(saveData);

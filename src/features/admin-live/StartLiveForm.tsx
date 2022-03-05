@@ -4,9 +4,11 @@ import {
   Alert,
   AlertTitle,
   Button,
+  FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -61,6 +63,7 @@ export const StartLiveForm: FunctionComponent<{
   const onSubmit: SubmitHandler<StartLiveData> = (data) => {
     if (!validateStream) return;
     const [preLiveImageFile, errorImageFile, channelImageFile] = files;
+    console.log(data);
     onSubmited(data, users, preLiveImageFile, errorImageFile, channelImageFile);
   };
 
@@ -281,6 +284,23 @@ export const StartLiveForm: FunctionComponent<{
                 }}
               />
             )}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <Controller
+            name="showWatchingUser"
+            defaultValue={false}
+            control={control}
+            render={({ field }) => {
+              return (
+                <FormControlLabel
+                  {...field}
+                  control={<Switch checked={field.value} />}
+                  label="Show Watching User"
+                />
+              );
+            }}
           />
         </Grid>
 

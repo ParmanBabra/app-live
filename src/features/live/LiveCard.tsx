@@ -22,7 +22,10 @@ export default function LiveCard() {
 
   if (!live) return <React.Fragment></React.Fragment>;
 
+  console.log(live);
+
   let createDate = moment.unix(live.current.live_date.seconds);
+  let show_watching_users = live.current.show_watching_users as boolean;
 
   return (
     <Card
@@ -34,18 +37,20 @@ export default function LiveCard() {
       <CardHeader
         avatar={<Avatar alt="Remy Sharp" src={live.current.channel_image} />}
         action={
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
-            <GroupIcon />
-            <Typography variant="body2" sx={{ px: 1 }}>
-              {live.current.watching_count.toLocaleString()}
-            </Typography>
-          </Box>
+          show_watching_users && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              <GroupIcon />
+              <Typography variant="body2" sx={{ px: 1 }}>
+                {live.current.watching_count.toLocaleString()}
+              </Typography>
+            </Box>
+          )
         }
         title={live.current.title}
         subheader={`Live On : ${createDate.format("DD MMMM YYYY, h:mm")}`}
