@@ -46,7 +46,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build && firebase deploy",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start:prod": "cross-env REACT_APP_NODE_ENV=production && react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"

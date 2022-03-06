@@ -10,11 +10,13 @@ import React, { Fragment, useState } from "react";
 import ChatIcon from "@mui/icons-material/Chat";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { exportChats, exportRegisterUsers, startNewLive } from "./liveSlice";
 import { EndLiveRequest } from "./model";
 import { Controller, useForm } from "react-hook-form";
 import { Cancel, CheckCircle } from "@mui/icons-material";
+import { RootState } from "../../app/store";
+import { LoadingButton } from "@mui/lab";
 
 export const EndedLive = () => {
   const {
@@ -26,6 +28,12 @@ export const EndedLive = () => {
 
   const [validateStream, setValidateStream] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const { exportChatsLoading, exportRegisterUserLoading } = useSelector(
+    (state: RootState) => ({
+      exportChatsLoading: state.live.exportChatsLoading,
+      exportRegisterUserLoading: state.live.exportRegisterUserLoading,
+    })
+  );
 
   const onSubmit = async (data: EndLiveRequest) => {
     await dispatch(startNewLive(data));
@@ -102,7 +110,8 @@ export const EndedLive = () => {
           />
         </Grid>
         <Grid item xs={12} sm={12} sx={{ mt: 1 }}>
-          <Button
+          <LoadingButton
+            loading={exportRegisterUserLoading}
             type="button"
             fullWidth
             variant="outlined"
@@ -110,18 +119,20 @@ export const EndedLive = () => {
             onClick={handleExportRegisterUsers}
           >
             Export Register User
-          </Button>
+          </LoadingButton>
         </Grid>
         <Grid item xs={12} sm={12} sx={{ mt: 1 }}>
-          <Button
+          <LoadingButton
+            loading={exportChatsLoading}
             type="button"
             fullWidth
             variant="outlined"
+            // eslint-disable-next-line react/jsx-no-undef
             startIcon={<ChatIcon />}
             onClick={handleExportChats}
           >
             Export Chats
-          </Button>
+          </LoadingButton>
         </Grid>
         <Grid item xs={12} sm={12} sx={{ mt: 1 }}>
           <Button

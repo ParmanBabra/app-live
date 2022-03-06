@@ -22,6 +22,8 @@ import { rrfProps } from "../../app/store";
 
 const initialState = {
   loading: false,
+  exportRegisterUserLoading: false,
+  exportChatsLoading: false,
 };
 
 type StartLiveRequest = {
@@ -31,8 +33,6 @@ type StartLiveRequest = {
   errorImage?: File | null;
   channelImage?: File | null;
 };
-
-
 
 export const startLive = createAsyncThunk<void, StartLiveRequest>(
   "live/start",
@@ -207,6 +207,24 @@ export const userSlice = createSlice({
       })
       .addCase(startLive.rejected, (state, action) => {
         state.loading = false;
+      })
+      .addCase(exportRegisterUsers.fulfilled, (state, action) => {
+        state.exportRegisterUserLoading = false;
+      })
+      .addCase(exportRegisterUsers.pending, (state, action) => {
+        state.exportRegisterUserLoading = true;
+      })
+      .addCase(exportRegisterUsers.rejected, (state, action) => {
+        state.exportRegisterUserLoading = false;
+      })
+      .addCase(exportChats.fulfilled, (state, action) => {
+        state.exportChatsLoading = false;
+      })
+      .addCase(exportChats.pending, (state, action) => {
+        state.exportChatsLoading = true;
+      })
+      .addCase(exportChats.rejected, (state, action) => {
+        state.exportChatsLoading = false;
       });
   },
 });

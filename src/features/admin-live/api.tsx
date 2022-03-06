@@ -162,22 +162,35 @@ export const getRegisterUsers = async (): Promise<RegisterUsersInfomation> => {
 
   let live: any = docLive.data();
   let register_users = live.register_users as string[];
+  console.log(register_users);
 
-  const refUsers = collection(db, "user-infomations");
-  const q = query(refUsers, where("email", "in", register_users));
+  const collectionPath = collection(db, "user-infomations");
+  const batches = [];
 
-  const querySnapshot = await getDocs(q);
+  while (register_users.length) {
+    // firestore limits batches to 10
+    const batch = register_users.splice(0, 10);
 
-  const registerUsers: RegisterUser[] = querySnapshot.docs.map((x) => {
-    let data = x.data();
-    return {
-      email: data.email,
-      first_name: data.first_name,
-      last_name: data.last_name,
-      organization: data.organization,
-      tel: data.tel,
-    };
-  });
+    // add the batch request to to a queue
+    batches.push(
+      getDocs(query(collectionPath, where("email", "in", [...batch]))).then(
+        (results) =>
+          results.docs.map((x) => {
+            let data = x.data();
+            return {
+              email: data.email,
+              first_name: data.first_name,
+              last_name: data.last_name,
+              organization: data.organization,
+              tel: data.tel,
+            };
+          })
+      )
+    );
+  }
+
+  let results = await Promise.all(batches);
+  const registerUsers: RegisterUser[] = results.flat();
 
   return {
     liveTitle: live.title as string,
