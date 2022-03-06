@@ -28,8 +28,11 @@ import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 
+import VideoOnDemand from "./features/video-ondemand/VideoOnDemand";
+
 import logo from "./images/Logo.svg";
-import "./App.css"
+import "./App.css";
+import Watching from "./features/video-ondemand/Watching";
 
 function App() {
   const user = useSelector((state: RootState) => state.user);
@@ -95,6 +98,12 @@ function App() {
             </ListItemIcon>
             Live
           </MenuItem>
+          <MenuItem onClick={() => toLink("/video-ondemand")}>
+            <ListItemIcon>
+              <OndemandVideoIcon />
+            </ListItemIcon>
+            Video Ondemand
+          </MenuItem>
           {user.isAdmin && (
             <MenuItem onClick={() => toLink("/admin-live")}>
               <ListItemIcon>
@@ -103,6 +112,7 @@ function App() {
               Admin Live
             </MenuItem>
           )}
+
           <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <LogoutIcon />
@@ -152,6 +162,8 @@ function App() {
       >
         <Routes>
           <Route path="/" element={<Live />} />
+          <Route path="/video-ondemand/:id" element={<Watching />} />
+          <Route path="/video-ondemand" element={<VideoOnDemand />} />
           {user.isAdmin && <Route path="/admin-live" element={<AdminLive />} />}
         </Routes>
       </Box>

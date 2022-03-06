@@ -33,6 +33,14 @@ export type StartLiveUpdateData = {
   show_watching_users: boolean;
 };
 
+export type EndLiveRequest = {
+  live_url: string;
+};
+
+export interface LiveData extends StartLiveUpdateData {
+  end_live_date: Date;
+}
+
 export type ChatsInfomation = {
   liveTitle: string;
   chats: Chat[];

@@ -15,8 +15,10 @@ import {
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import {
   ChatsInfomation,
+  EndLiveRequest,
   firstName,
   lastName,
+  LiveData,
   RegisterUser,
   RegisterUsersInfomation,
   StartLiveData,
@@ -87,9 +89,27 @@ export const endLiveApi = async () => {
   await updateDoc(refDoc, { step: 2, end_live_date: new Date() });
 };
 
-export const startNewLiveApi = async () => {
+export const startNewLiveApi = async (data: EndLiveRequest) => {
   const db = getFirestore();
   const refDoc = doc(db, "live", "current");
+  const liveDoc = await getDoc(refDoc);
+
+  const live = liveDoc.data() as LiveData;
+
+  const newVideoRef = doc(collection(db, "video-on-demand"));
+
+  await setDoc(newVideoRef, {
+    key: newVideoRef.id,
+    channel_image: live.channel_image,
+    create_date: live.create_date,
+    end_live_date: live.end_live_date,
+    error_image: live.error_image,
+    grant_users: live.grant_users,
+    live_date: live.live_date,
+    live_url: data.live_url,
+    pre_live_image: live.pre_live_image,
+    title: live.title,
+  });
 
   const refCol = collection(refDoc, "chat");
   const refChats = await getDocs(refCol);

@@ -9,6 +9,7 @@ import {
   upsertUsers,
 } from "./api";
 import {
+  EndLiveRequest,
   RegisterUser,
   StartLiveData,
   StartLiveUpdateData,
@@ -30,6 +31,8 @@ type StartLiveRequest = {
   errorImage?: File | null;
   channelImage?: File | null;
 };
+
+
 
 export const startLive = createAsyncThunk<void, StartLiveRequest>(
   "live/start",
@@ -91,15 +94,15 @@ export const endLive = createAsyncThunk<void, void>(
   }
 );
 
-export const startNewLive = createAsyncThunk<void, void>(
+export const startNewLive = createAsyncThunk<void, EndLiveRequest>(
   "live/start_new",
   async (request, thunkApi) => {
-    await startNewLiveApi();
+    await startNewLiveApi(request);
   }
 );
 
 export const exportRegisterUsers = createAsyncThunk<void, void>(
-  "live/export-chats",
+  "live/export-register-users",
   async (request, thunkApi) => {
     const live = await getRegisterUsers();
 
@@ -178,8 +181,6 @@ export const exportChats = createAsyncThunk<void, void>(
       },
     ];
 
-    console.log(live);
-
     try {
       await writeXlsxFile(live.chats, {
         schema: schema,
@@ -203,6 +204,9 @@ export const userSlice = createSlice({
       })
       .addCase(startLive.pending, (state, action) => {
         state.loading = true;
+      })
+      .addCase(startLive.rejected, (state, action) => {
+        state.loading = false;
       });
   },
 });

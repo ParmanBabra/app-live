@@ -23,7 +23,6 @@ export const AdminLive = () => {
       doc: "current",
     }, // or 'todos'
   ]);
-  const firestore = useFirestore();
 
   const live = useSelector((state: RootState) => state.firestore.data.live);
   const dispatch = useDispatch();
@@ -31,6 +30,7 @@ export const AdminLive = () => {
   function renderForm(activeStep: number | undefined) {
     if (activeStep == undefined) return <Fragment />;
 
+    
     if (activeStep === 0)
       return (
         <StartLiveForm

@@ -11,8 +11,6 @@ import IconButton from "@mui/material/IconButton";
 import MuiDrawer from "@mui/material/Drawer";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
@@ -20,7 +18,6 @@ import SendIcon from "@mui/icons-material/Send";
 
 import { RootState } from "../../app/store";
 
-import simpleImage from "./../../images/live-streaming.png";
 import LiveCard from "./LiveCard";
 import {
   Checkbox,
@@ -337,7 +334,6 @@ function Live() {
               errorImage={live.current.error_image}
               preLiveImage={live.current.pre_live_image}
               soruce={live.current.live_url}
-              maxHeight="calc(100vh - 48px - 75px)"
             />
           )}
 

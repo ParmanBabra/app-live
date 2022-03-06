@@ -45,7 +45,6 @@ export const Living = () => {
           errorImage={live.current.error_image}
           preLiveImage={live.current.pre_live_image}
           soruce={live.current.live_url}
-          maxHeight="100%"
         />
       )}
 

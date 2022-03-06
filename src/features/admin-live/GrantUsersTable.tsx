@@ -10,6 +10,8 @@ import {
 import React, { Fragment } from "react";
 import { UserExcelData, firstName, lastName } from "./model";
 
+import "./GrantUsersTable.css"
+
 type Props = {
   data?: UserExcelData[] | null | undefined;
 };
@@ -22,9 +24,9 @@ export const GrantUsersTable = (props: Props) => {
   }
 
   return (
-    <TableContainer component={Paper} elevation={2}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
+    <TableContainer component={Paper} elevation={2} className="table-contrainer">
+      <Table sx={{ minWidth: 650 }}>
+        <TableHead className="header">
           <TableRow>
             <TableCell>Register Email</TableCell>
             <TableCell align="right">First Name</TableCell>
@@ -33,7 +35,7 @@ export const GrantUsersTable = (props: Props) => {
             <TableCell align="right">Tel.</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody className="body">
           {data.map((row: UserExcelData) => (
             <TableRow
               key={row.register_email}

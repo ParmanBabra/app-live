@@ -1,3 +1,8 @@
 .video-frame {
   border: none;
 }
+
+#player {
+  width: 100%;
+  max-height: calc(100vh - 48px);
+}

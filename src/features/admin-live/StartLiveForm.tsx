@@ -168,6 +168,7 @@ export const StartLiveForm: FunctionComponent<{
       </Typography>
       <Grid
         component="form"
+        noValidate
         onSubmit={handleSubmit(onSubmit)}
         container
         spacing={3}

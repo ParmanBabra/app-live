@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, Fragment } from "react";
 import { Box, SxProps, Theme } from "@mui/material";
 
 import { ErrorTypes } from "hls.js";
@@ -10,11 +10,11 @@ import "./Video.css";
 const OvenPlayer = require("ovenplayer");
 
 interface Props {
-  maxHeight?: string;
   soruce: string;
   startLiveDate: Date;
   errorImage: string;
   preLiveImage: string;
+  title?: string;
 }
 
 export const Video = (props: Props) => {
@@ -29,6 +29,10 @@ export const Video = (props: Props) => {
     startLiveDate = startLiveDate.toDate();
 
     return startLiveDate.getTime() - now.getTime();
+  };
+
+  const cleanup = () => {
+    if (player) player.remove();
   };
 
   let diffDate = getDiffTick(props);
@@ -48,15 +52,20 @@ export const Video = (props: Props) => {
         clearInterval(timer);
       }
     }, 1000);
+
+    return function cleanup() {
+      clearInterval(timer);
+    };
   }, [living]);
 
   useEffect(() => {
-    if (!living) return;
+    if (!living) return cleanup;
 
     const player = OvenPlayer.create(playerRef.current.id, {
       autoStart: true,
       autoFallback: true,
       mute: true,
+      title: props.title,
       sources: [
         {
           type: "hls",
@@ -71,16 +80,12 @@ export const Video = (props: Props) => {
     });
 
     setPlayer(player);
+
+    return cleanup;
   }, [props.soruce, living]);
 
   return (
-    <Box
-      component="div"
-      sx={{
-        maxHeight: props.maxHeight,
-        maxWidth: "100%",
-      }}
-    >
+    <div>
       {image != "" ? (
         <img
           src={image}
@@ -88,9 +93,9 @@ export const Video = (props: Props) => {
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         ></img>
       ) : (
-        <div ref={playerRef} id="player"></div>
+        <div ref={playerRef} id="player" />
       )}
-    </Box>
+    </div>
   );
 };
 
