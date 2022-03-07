@@ -13,6 +13,8 @@ import { Controller, useForm } from "react-hook-form";
 import { RegisterRequest } from "./model";
 import { emailValidate } from "../../app/helper";
 
+import "./RegisterForm.css"
+
 type EventHandler = () => void;
 type SubmitHandler = (data: RegisterRequest) => void;
 
@@ -36,7 +38,7 @@ export const RegisterForm: FunctionComponent<{
       <Typography component="h1" variant="h5">
         Register
       </Typography>
-      <Alert severity="error">{message}</Alert>
+      <Alert severity="error" className="alert-message ">{message}</Alert>
       <Box
         component="form"
         onSubmit={handleSubmit(onRegister)}

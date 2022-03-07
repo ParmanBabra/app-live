@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -18,11 +19,13 @@ import { useParams } from "react-router-dom";
 import { RootState } from "../../app/store";
 import Video from "../live/Video";
 import { VideoOnDeamandData } from "./model";
+// import { register } from "./ondemandSlice";
 
 import "./VideoOnDemand.css";
 
 function Watching() {
   let { id } = useParams();
+  let dispatch = useDispatch();
   useFirestoreConnect([
     {
       collection: "video-on-demand",

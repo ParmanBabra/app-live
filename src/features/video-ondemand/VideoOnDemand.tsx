@@ -57,7 +57,7 @@ function VideoOnDemand() {
             color="text.primary"
             gutterBottom
           >
-            Video On Deamand
+            Video On Demand
           </Typography>
         </Box>
         <Grid container spacing={3}>

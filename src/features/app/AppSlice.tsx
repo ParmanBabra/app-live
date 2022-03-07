@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { grantApi } from "../admin-live/api";
 import { AppState } from "./model";
 
 let userJson: string | null = localStorage.getItem("app");
@@ -10,6 +11,14 @@ const updateState = (state: AppState) => {
   let json = JSON.stringify(state);
   localStorage.setItem("app", json);
 };
+
+export const grantLive = createAsyncThunk<void, string>(
+  "live/grant",
+  async (request, thunkApi) => {
+    console.log("ok")
+    await grantApi(request.toLowerCase());
+  }
+);
 
 export const appSlice = createSlice({
   name: "app",

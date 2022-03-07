@@ -7,6 +7,7 @@ import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 import { RegisterRequest } from "./model";
 import { register } from "./userSlice";
+import { useNavigate } from "react-router-dom";
 
 const style: SxProps<Theme> = {
   position: "absolute" as "absolute",
@@ -30,9 +31,11 @@ export default function Login(props: LoginProps) {
   const [registerMessage, setRegisterMessage] = useState<string | null>(null);
   const [state, setState] = useState(0);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmitLogin = () => {
     setOpen(false);
+    navigate(`video-ondemand`, { replace: true });
   };
 
   const handleRegister = (message: string) => {
@@ -48,6 +51,7 @@ export default function Login(props: LoginProps) {
     await dispatch(register(data));
     setState(0);
     setOpen(false);
+    navigate(`video-ondemand`, { replace: true });
   };
 
   const renderForms = (state: number) => {

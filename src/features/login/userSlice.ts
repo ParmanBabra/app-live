@@ -10,7 +10,7 @@ import {
 } from "./model";
 
 let userJson: string | null = localStorage.getItem("user");
-let init: any = JSON.parse(userJson ? userJson : `{}`);
+let init: any = JSON.parse(userJson ? userJson : `{"isLogin": false}`);
 
 const initialState: UserState = init as UserState;
 
@@ -19,11 +19,6 @@ export const login = createAsyncThunk<LoginResult | null, LoginRequest>(
   async (request, thunkApi) => {
     const response = await loginApi(request.email.trim().toLowerCase());
     if (!response) throw "Email address not found";
-
-    const permission = await checkPermissionApi(request.email.trim().toLowerCase());
-
-    if (!permission)
-      throw "Email address cannot access to live. Please register";
 
     if (request.rememberMe) {
       let user: UserState = {
@@ -46,7 +41,7 @@ export const register = createAsyncThunk<RegisterResult, RegisterRequest>(
   "user/register",
   async (request, thunkApi) => {
     let result = await registerApi(request);
-    await grantApi(result.email.trim().toLowerCase());
+    // await grantApi(result.email.trim().toLowerCase());
 
     return result;
   }

@@ -21,7 +21,7 @@ import { UserState } from "./features/login/model";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { AdminLive } from "./features/admin-live/AdminLive";
 import { Check } from "@mui/icons-material";
-import { toggleShowName } from "./features/app/AppSlice";
+import { grantLive } from "./features/app/AppSlice";
 import PersonIcon from "@mui/icons-material/Person";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
@@ -92,7 +92,12 @@ function App() {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={() => toLink("/")}>
+          <MenuItem
+            onClick={async () => {
+              toLink("/live");
+              await dispatch(grantLive(user.email as string));
+            }}
+          >
             <ListItemIcon>
               <OndemandVideoIcon />
             </ListItemIcon>
@@ -161,7 +166,7 @@ function App() {
         }}
       >
         <Routes>
-          <Route path="/" element={<Live />} />
+          <Route path="/live" element={<Live />} />
           <Route path="/video-ondemand/:id" element={<Watching />} />
           <Route path="/video-ondemand" element={<VideoOnDemand />} />
           {user.isAdmin && <Route path="/admin-live" element={<AdminLive />} />}

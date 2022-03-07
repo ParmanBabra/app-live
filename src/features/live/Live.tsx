@@ -92,7 +92,6 @@ function Live() {
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [firstLoad, setFirstLoad] = useState(true);
   const dispatch = useDispatch();
 
   useFirestoreConnect([
@@ -109,6 +108,7 @@ function Live() {
       storeAs: "chats",
     }, // or 'todos'
   ]);
+  
   const firestore = useFirestore();
   const user = useSelector((state: RootState) => state.user);
   const app = useSelector((state: RootState) => state.app);
@@ -140,7 +140,7 @@ function Live() {
     return function cleanup() {
       clearTimeout(updating);
     };
-  }, [firstLoad, user.isLogin]);
+  }, [user.isLogin]);
 
   const handleOnSend = () => {
     if (message.trim() === "") return;
@@ -280,9 +280,7 @@ function Live() {
     setLoading(false);
   };
 
-  if (!live) return <Fragment></Fragment>;
-
-  if (live.current.step === 0 || live.current.step === 2) {
+  if (!live || live.current.step === 0 || live.current.step === 2) {
     return (
       <Fragment>
         <LiveNotStart />

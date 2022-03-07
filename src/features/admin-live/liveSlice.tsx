@@ -225,6 +225,15 @@ export const userSlice = createSlice({
       })
       .addCase(exportChats.rejected, (state, action) => {
         state.exportChatsLoading = false;
+      })
+      .addCase(startNewLive.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(startNewLive.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(startNewLive.rejected, (state, action) => {
+        state.loading = false;
       });
   },
 });

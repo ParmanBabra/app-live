@@ -28,12 +28,12 @@ export const EndedLive = () => {
 
   const [validateStream, setValidateStream] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const { exportChatsLoading, exportRegisterUserLoading } = useSelector(
-    (state: RootState) => ({
+  const { exportChatsLoading, exportRegisterUserLoading, loading } =
+    useSelector((state: RootState) => ({
       exportChatsLoading: state.live.exportChatsLoading,
       exportRegisterUserLoading: state.live.exportRegisterUserLoading,
-    })
-  );
+      loading: state.live.loading,
+    }));
 
   const onSubmit = async (data: EndLiveRequest) => {
     await dispatch(startNewLive(data));
@@ -135,14 +135,15 @@ export const EndedLive = () => {
           </LoadingButton>
         </Grid>
         <Grid item xs={12} sm={12} sx={{ mt: 1 }}>
-          <Button
+          <LoadingButton
+            loading={loading}
             type="submit"
             fullWidth
             variant="contained"
             startIcon={<OndemandVideoIcon />}
           >
             Start New Live
-          </Button>
+          </LoadingButton>
         </Grid>
       </Grid>
     </Fragment>
