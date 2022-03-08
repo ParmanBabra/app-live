@@ -27,7 +27,7 @@ function VideoOnDemand() {
   useFirestoreConnect([
     {
       collection: "video-on-demand",
-      // where: ["grant_users", "array-contains", user.email],
+      where: ["grant_users", "array-contains", user.email],
       orderBy: ["create_date", "desc"],
     },
   ]);
