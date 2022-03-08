@@ -33,6 +33,7 @@ import VideoOnDemand from "./features/video-ondemand/VideoOnDemand";
 import logo from "./images/Logo.svg";
 import "./App.css";
 import Watching from "./features/video-ondemand/Watching";
+import RequireAuth from "./features/login/RequireAuth";
 
 function App() {
   const user = useSelector((state: RootState) => state.user);
@@ -166,10 +167,40 @@ function App() {
         }}
       >
         <Routes>
-          <Route path="/live" element={<Live />} />
-          <Route path="/video-ondemand/:id" element={<Watching />} />
-          <Route path="/video-ondemand" element={<VideoOnDemand />} />
-          {user.isAdmin && <Route path="/admin-live" element={<AdminLive />} />}
+          <Route
+            path="/live"
+            element={
+              <RequireAuth>
+                <Live />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/video-ondemand/:id"
+            element={
+              <RequireAuth>
+                <Watching />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/video-ondemand"
+            element={
+              <RequireAuth>
+                <VideoOnDemand />
+              </RequireAuth>
+            }
+          />
+          {user.isAdmin && (
+            <Route
+              path="/admin-live"
+              element={
+                <RequireAuth>
+                  <AdminLive />
+                </RequireAuth>
+              }
+            />
+          )}
         </Routes>
       </Box>
       <Login />

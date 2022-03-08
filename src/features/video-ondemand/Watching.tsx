@@ -51,6 +51,14 @@ function Watching() {
           width: "100vw",
         }}
       >
+        {/* <Button
+          type="button"
+          onClick={async () => {
+            await dispatch(register(id as string));
+          }}
+        >
+          Register
+        </Button> */}
         <Video
           title={video.title}
           soruce={video.live_url}

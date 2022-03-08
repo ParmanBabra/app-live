@@ -221,25 +221,22 @@ const emails = [
   "atit@thaimice.com",
 ];
 
-// export const register = createAsyncThunk<void, string>(
-//   "ondemand/register",
-//   async (request, thunkApi) => {
-//     let db = getFirestore();
-//     let ref = doc(db, "video-on-demand", request);
-//     let docData = await getDoc(ref);
-//     let data: any = docData.data();
-//     let grant_users: string[] = data.grant_users;
+export const register = createAsyncThunk<void, string>(
+  "ondemand/register",
+  async (request, thunkApi) => {
+    let db = getFirestore();
+    let ref = doc(db, "video-on-demand", request);
+    let docData = await getDoc(ref);
+    let data: any = docData.data();
+    let grant_users: string[] = data.grant_users;
 
-//     console.log(data);
+    console.log(data);
 
-//     grant_users = _.union(grant_users, emails);
+    grant_users = _.union(grant_users, emails);
 
-//     await updateDoc(ref, { grant_users });
-
-//     // let result = await registerApi(request);
-//     // await grantApi(result.email.trim().toLowerCase());
-//   }
-// );
+    await updateDoc(ref, { grant_users });
+  }
+);
 
 export const ondemandSlice = createSlice({
   name: "ondemand",

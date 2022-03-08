@@ -71,6 +71,7 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.email = action.payload?.email;
         state.name = action.payload?.name;
         state.isAdmin = action.payload?.is_admin;
