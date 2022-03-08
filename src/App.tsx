@@ -34,6 +34,7 @@ import logo from "./images/Logo.svg";
 import "./App.css";
 import Watching from "./features/video-ondemand/Watching";
 import RequireAuth from "./features/login/RequireAuth";
+import AdminPanel from "./features/admin-video-ondemand/AdminPanel";
 
 function App() {
   const user = useSelector((state: RootState) => state.user);
@@ -111,12 +112,20 @@ function App() {
             Video Ondemand
           </MenuItem>
           {user.isAdmin && (
-            <MenuItem onClick={() => toLink("/admin-live")}>
-              <ListItemIcon>
-                <SupervisorAccountIcon />
-              </ListItemIcon>
-              Admin Live
-            </MenuItem>
+            <Fragment>
+              <MenuItem onClick={() => toLink("/admin-live")}>
+                <ListItemIcon>
+                  <SupervisorAccountIcon />
+                </ListItemIcon>
+                Admin Live
+              </MenuItem>
+              <MenuItem onClick={() => toLink("/admin-ondemand")}>
+                <ListItemIcon>
+                  <SupervisorAccountIcon />
+                </ListItemIcon>
+                Admin On Demand
+              </MenuItem>
+            </Fragment>
           )}
 
           <MenuItem onClick={handleLogout}>
@@ -192,14 +201,24 @@ function App() {
             }
           />
           {user.isAdmin && (
-            <Route
-              path="/admin-live"
-              element={
-                <RequireAuth>
-                  <AdminLive />
-                </RequireAuth>
-              }
-            />
+            <Fragment>
+              <Route
+                path="/admin-live"
+                element={
+                  <RequireAuth>
+                    <AdminLive />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/admin-ondemand"
+                element={
+                  <RequireAuth>
+                    <AdminPanel />
+                  </RequireAuth>
+                }
+              />
+            </Fragment>
           )}
         </Routes>
       </Box>
