@@ -1,36 +1,37 @@
-import { Fragment, useState, useEffect, useRef } from "react";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
-import { useDispatch, useSelector } from "react-redux";
-import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
-
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MuiDrawer from "@mui/material/Drawer";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-
-import Paper from "@mui/material/Paper";
-import InputBase from "@mui/material/InputBase";
 import SendIcon from "@mui/icons-material/Send";
-
-import { RootState } from "../../app/store";
-
-import LiveCard from "./LiveCard";
 import {
   Checkbox,
   CSSObject,
   FormControlLabel,
   FormGroup,
-  Theme,
+  Theme
 } from "@mui/material";
-import Video from "./Video";
-import { Chat } from "./model";
-import { LiveNotStart } from "./LiveNotStart";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import MuiDrawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import InputBase from "@mui/material/InputBase";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useFirestore, useFirestoreConnect } from "react-redux-firebase";
+import { useParams } from "react-router-dom";
+import { RootState } from "../../app/store";
+import { LiveData } from "../admin-panel/model";
+import { grantLive, toggleShowName } from "../app/AppSlice";
 import "./Live.css";
-import { toggleShowName } from "../app/AppSlice";
+import { LiveCard } from "./LiveCard";
+import { LiveNotStart } from "./LiveNotStart";
+import { Chat } from "./model";
+import Video from "./Video";
+
+
+
 
 const drawerMaxWidth = 375;
 const drawerMinWidth = 75;
@@ -89,6 +90,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
 });
 
 function Live() {
+  let { id } = useParams();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -97,18 +99,18 @@ function Live() {
   useFirestoreConnect([
     {
       collection: "live",
-      doc: "current",
+      doc: id,
     },
     {
       collection: "live",
-      doc: "current",
+      doc: id,
       subcollections: [{ collection: "chat" }],
       orderBy: [["create_date", "desc"]],
       //   limit: 10,
       storeAs: "chats",
     }, // or 'todos'
   ]);
-  
+
   const firestore = useFirestore();
   const user = useSelector((state: RootState) => state.user);
   const app = useSelector((state: RootState) => state.app);
@@ -116,31 +118,31 @@ function Live() {
     (state: RootState) => state.firestore.ordered.chats
   );
 
-  const live = useSelector((state: RootState) => state.firestore.data.live);
+  const row = useSelector((state: RootState) => state.firestore.data.live);
 
   const updateUserCounting = async () => {
     console.log("update watching count...");
-    let doc = await firestore.collection("live").doc("current").get();
+    let doc = await firestore.collection("live").doc(id).get();
     let live: any = doc.data();
 
     if (!live.watching_users.includes(user.email)) {
       live.watching_users.push(user.email);
       live.watching_count += 1;
-      await firestore.collection("live").doc("current").update(live);
+      await firestore.collection("live").doc(id).update(live);
     }
   };
 
   useEffect(() => {
-    if (!user.isLogin) {
-      return;
-    }
-
     let updating = setTimeout(updateUserCounting, 6000);
 
     return function cleanup() {
       clearTimeout(updating);
     };
-  }, [user.isLogin]);
+  });
+
+  useEffect(() => {
+    dispatch(grantLive({ email: user.email as string, key: id as string }));
+  });
 
   const handleOnSend = () => {
     if (message.trim() === "") return;
@@ -154,7 +156,7 @@ function Live() {
     };
     return firestore
       .collection("live")
-      .doc("current")
+      .doc(id)
       .collection("chat")
       .add(chatMessage);
   };
@@ -265,22 +267,17 @@ function Live() {
     );
   };
 
-  const handleOnLoadMore = async () => {
-    setLoading(true);
-    await firestore.get({
-      collection: "live",
-      doc: "current",
-      subcollections: [{ collection: "chat" }],
-      orderBy: [["create_date", "desc"]],
-      //   limit: 10,
-      //   startAt: 0,
-      //   endAt: 2,
-      storeAs: "chats",
-    });
-    setLoading(false);
-  };
+  if (!row) {
+    return (
+      <Fragment>
+        <LiveNotStart />
+      </Fragment>
+    );
+  }
 
-  if (!live || live.current.step === 0 || live.current.step === 2) {
+  const live = row[id] as LiveData;
+
+  if (!live || live.step === 0 || live.step === 2) {
     return (
       <Fragment>
         <LiveNotStart />
@@ -326,16 +323,14 @@ function Live() {
             },
           }}
         >
-          {live.current && (
-            <Video
-              startLiveDate={live.current.live_date}
-              errorImage={live.current.error_image}
-              preLiveImage={live.current.pre_live_image}
-              soruce={live.current.live_url}
-            />
-          )}
+          <Video
+            startLiveDate={live.live_date}
+            errorImage={live.error_image}
+            preLiveImage={live.pre_live_image}
+            soruce={live.live_url}
+          />
 
-          <LiveCard />
+          <LiveCard live={live} />
 
           {renderSectionChat(drawerOpen, false)}
         </Box>

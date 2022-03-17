@@ -1,0 +1,84 @@
+.table-container {
+  width: 100vw !important;
+  overflow: auto;
+}
+
+.title-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-cell {
+  display: grid;
+  grid-template-columns: 40px auto;
+  grid-template-rows: auto auto auto auto;
+  column-gap: 10px;
+}
+
+.card-cell .avatar {
+  grid-row: 1 / span 2;
+}
+
+.card-cell .label-title {
+  display: inline;
+}
+
+.card-cell .live-icon {
+  margin-left: 10px;
+}
+
+.card-cell .live-on {
+  color: #818181;
+  grid-column: 1 / span 2;
+}
+
+.card-cell .label-title {
+  font-weight: bold;
+}
+
+.avatar-column {
+  display: flex;
+  justify-content: center;
+}
+
+.action-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.action-column .rect-button {
+  width: 100%;
+}
+
+.action-mobile {
+  gap: 10px;
+  grid-column: 1 / span 2;
+  justify-content: right;
+}
+
+.image-preview {
+  height: 128px;
+  object-fit: contain;
+}
+
+.btn-image-preview {
+  position: relative;
+}
+
+.btn-image-preview:hover .icon-preview {
+  display: inline;
+}
+
+.table-footer-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+}

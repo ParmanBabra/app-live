@@ -6,8 +6,9 @@ import {
 } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
 import userReducer from "../features/login/userSlice";
-import liveReducer from "../features/admin-live/liveSlice";
+// import liveReducer from "../features/live/liveSlice";
 import appReducer from "../features/app/AppSlice";
+import adminReducer from "../features/admin-panel/adminPanelSlice";
 
 // import { createStore, combineReducers, compose } from "redux";
 // import { reduxFirestore, firestoreReducer } from "redux-firestore";
@@ -31,10 +32,8 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId:process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
-
-console.log(firebaseConfig);
 
 const rrfConfig = {
   // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
@@ -46,7 +45,8 @@ firebase.firestore();
 const rootReducer = combineReducers({
   app: appReducer,
   user: userReducer,
-  live: liveReducer,
+  // live: liveReducer,
+  admin: adminReducer,
   counter: counterReducer,
   firebase: firebaseReducer,
   firestore: firestoreReducer,

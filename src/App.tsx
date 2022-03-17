@@ -1,40 +1,34 @@
-import { Fragment, useEffect, useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-
-import FlutterDashIcon from "@mui/icons-material/FlutterDash";
-import Avatar from "@mui/material/Avatar";
-import Login from "./features/login/Login";
-
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-
-import Live from "./features/live/Live";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./app/store";
-import { logout } from "./features/login/userSlice";
-import { ListItemIcon, Menu, MenuItem } from "@mui/material";
-import { UserState } from "./features/login/model";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
-import { AdminLive } from "./features/admin-live/AdminLive";
-import { Check } from "@mui/icons-material";
-import { grantLive } from "./features/app/AppSlice";
-import PersonIcon from "@mui/icons-material/Person";
-import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
-
-import VideoOnDemand from "./features/video-ondemand/VideoOnDemand";
-
-import logo from "./images/Logo.svg";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import { ListItemIcon, Menu, MenuItem } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { Fragment, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import Watching from "./features/video-ondemand/Watching";
+import { RootState } from "./app/store";
+import AdminPanel from "./features/admin-panel/AdminPanel";
+import LiveAdd from "./features/admin-panel/LiveAdd";
+import LiveEdit from "./features/admin-panel/LiveEdit";
+import VideoAdd from "./features/admin-panel/VideoAdd";
+// import { VideoForm } from "./features/admin-panel/VideoForm";
+import VideoEdit from "./features/admin-panel/VideoEdit";
+import Live from "./features/live/Live";
+import Login from "./features/login/Login";
+import { UserState } from "./features/login/model";
 import RequireAuth from "./features/login/RequireAuth";
-import AdminPanel from "./features/admin-video-ondemand/AdminPanel";
+import { logout } from "./features/login/userSlice";
+import VideoOnDemand from "./features/video-ondemand/VideoOnDemand";
+import Watching from "./features/video-ondemand/Watching";
+import logo from "./images/Logo.svg";
+
 
 function App() {
   const user = useSelector((state: RootState) => state.user);
@@ -94,38 +88,20 @@ function App() {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem
-            onClick={async () => {
-              toLink("/live");
-              await dispatch(grantLive(user.email as string));
-            }}
-          >
-            <ListItemIcon>
-              <OndemandVideoIcon />
-            </ListItemIcon>
-            Live
-          </MenuItem>
           <MenuItem onClick={() => toLink("/video-ondemand")}>
             <ListItemIcon>
               <OndemandVideoIcon />
             </ListItemIcon>
-            Video Ondemand
+            Home
           </MenuItem>
+
           {user.isAdmin && (
-            <Fragment>
-              <MenuItem onClick={() => toLink("/admin-live")}>
-                <ListItemIcon>
-                  <SupervisorAccountIcon />
-                </ListItemIcon>
-                Admin Live
-              </MenuItem>
-              <MenuItem onClick={() => toLink("/admin-ondemand")}>
-                <ListItemIcon>
-                  <SupervisorAccountIcon />
-                </ListItemIcon>
-                Admin On Demand
-              </MenuItem>
-            </Fragment>
+            <MenuItem onClick={() => toLink("/admin")}>
+              <ListItemIcon>
+                <SupervisorAccountIcon />
+              </ListItemIcon>
+              Admin Panel
+            </MenuItem>
           )}
 
           <MenuItem onClick={handleLogout}>
@@ -173,11 +149,12 @@ function App() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          maxWidth: "100vw",
         }}
       >
         <Routes>
           <Route
-            path="/live"
+            path="/live/:id"
             element={
               <RequireAuth>
                 <Live />
@@ -203,18 +180,42 @@ function App() {
           {user.isAdmin && (
             <Fragment>
               <Route
-                path="/admin-live"
+                path="/admin"
                 element={
                   <RequireAuth>
-                    <AdminLive />
+                    <AdminPanel />
                   </RequireAuth>
                 }
               />
               <Route
-                path="/admin-ondemand"
+                path="/admin/video/new"
                 element={
                   <RequireAuth>
-                    <AdminPanel />
+                    <VideoAdd />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/admin/video/:id"
+                element={
+                  <RequireAuth>
+                    <VideoEdit />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/admin/live/new"
+                element={
+                  <RequireAuth>
+                    <LiveAdd />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/admin/live/:id"
+                element={
+                  <RequireAuth>
+                    <LiveEdit />
                   </RequireAuth>
                 }
               />

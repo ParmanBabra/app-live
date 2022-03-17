@@ -1,27 +1,17 @@
 import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
-  Container,
-  Grid,
-  Typography,
+  Box
 } from "@mui/material";
-import _ from "lodash";
-import { Fragment, useState, useEffect, useRef } from "react";
-
+import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
+import { useFirestoreConnect } from "react-redux-firebase";
 import { useParams } from "react-router-dom";
 import { RootState } from "../../app/store";
+import { grantVideo } from "../app/AppSlice";
 import Video from "../live/Video";
 import { VideoOnDeamandData } from "./model";
 // import { register } from "./ondemandSlice";
-
 import "./VideoOnDemand.css";
+
 
 function Watching() {
   let { id } = useParams();
@@ -33,9 +23,15 @@ function Watching() {
     },
   ]);
 
+  const user = useSelector((state: RootState) => state.user);
+
   const videos = useSelector(
     (state: RootState) => state.firestore.data["video-on-demand"]
   );
+
+  useEffect(() => {
+    dispatch(grantVideo({ email: user.email as string, key: id as string }));
+  });
 
   if (!videos) return <Fragment />;
 

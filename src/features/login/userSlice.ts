@@ -1,12 +1,11 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { checkPermissionApi, grantApi } from "../admin-live/api";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { loginApi, registerApi } from "./api";
 import {
   LoginRequest,
   LoginResult,
   RegisterRequest,
   RegisterResult,
-  UserState,
+  UserState
 } from "./model";
 
 let userJson: string | null = localStorage.getItem("user");

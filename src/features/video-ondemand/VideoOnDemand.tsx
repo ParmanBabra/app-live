@@ -1,24 +1,22 @@
 import {
   Avatar,
   Box,
-  Card,
-  CardContent,
-  CardHeader,
+  Card, CardHeader,
   CardMedia,
   Container,
   Grid,
-  Typography,
+  Typography
 } from "@mui/material";
 import _ from "lodash";
-import { Fragment, useState, useEffect, useRef } from "react";
-
-import { useDispatch, useSelector } from "react-redux";
-import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
+import { Fragment } from "react";
+import { useSelector } from "react-redux";
+import { useFirestore, useFirestoreConnect } from "react-redux-firebase";
+import { useNavigate } from "react-router-dom";
 import { RootState } from "../../app/store";
 import { VideoOnDeamandData } from "./model";
-import { useNavigate } from "react-router-dom";
-
 import "./VideoOnDemand.css";
+
+
 
 function VideoOnDemand() {
   const user = useSelector((state: RootState) => state.user);

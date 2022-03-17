@@ -1,29 +1,21 @@
-import * as React from "react";
+import GroupIcon from "@mui/icons-material/Group";
+import { Box } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
-import GroupIcon from "@mui/icons-material/Group";
-
-import SickIcon from "@mui/icons-material/Sick";
-import { Box } from "@mui/material";
-
-import { useSelector } from "react-redux";
-import { useFirestoreConnect } from "react-redux-firebase";
 import moment from "moment";
+import * as React from "react";
+import { LiveData } from "../admin-panel/model";
 
-import { RootState } from "../../app/store";
 
-export default function LiveCard() {
-  useFirestoreConnect([{ collection: "live", doc: "current" }]);
 
-  const live = useSelector((state: RootState) => state.firestore.data.live);
 
-  if (!live) return <React.Fragment></React.Fragment>;
-
-  let createDate = moment.unix(live.current.live_date.seconds);
-  let show_watching_users = live.current.show_watching_users as boolean;
+export const LiveCard: React.FunctionComponent<{
+  live: LiveData;
+}> = ({ live }) => {
+  let liveOn = moment(live.live_date.toDate()).fromNow();
+  let show_watching_users = live.show_watching_user as boolean;
 
   return (
     <Card
@@ -33,7 +25,7 @@ export default function LiveCard() {
       }}
     >
       <CardHeader
-        avatar={<Avatar alt="Remy Sharp" src={live.current.channel_image} />}
+        avatar={<Avatar alt="Remy Sharp" src={live.channel_image} />}
         action={
           show_watching_users && (
             <Box
@@ -45,14 +37,14 @@ export default function LiveCard() {
             >
               <GroupIcon />
               <Typography variant="body2" sx={{ px: 1 }}>
-                {live.current.watching_count.toLocaleString()}
+                {live.watching_count.toLocaleString()}
               </Typography>
             </Box>
           )
         }
-        title={live.current.title}
-        subheader={`Live On : ${createDate.format("DD MMMM YYYY, h:mm")}`}
+        title={live.title}
+        subheader={`Live On : ${liveOn}`}
       />
     </Card>
   );
-}
+};

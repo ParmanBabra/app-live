@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { grantApi } from "../admin-live/api";
-import { AppState } from "./model";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { grantLiveApi, grantVideoApi } from "../admin-panel/api";
+import { AppState, GrantPermission } from "./model";
+
 
 let userJson: string | null = localStorage.getItem("app");
 let init: any = JSON.parse(userJson ? userJson : `{}`);
@@ -12,11 +13,17 @@ const updateState = (state: AppState) => {
   localStorage.setItem("app", json);
 };
 
-export const grantLive = createAsyncThunk<void, string>(
+export const grantLive = createAsyncThunk<void, GrantPermission>(
   "live/grant",
   async (request, thunkApi) => {
-    console.log("ok")
-    await grantApi(request.toLowerCase());
+    await grantLiveApi(request.key, request.email.toLowerCase());
+  }
+);
+
+export const grantVideo = createAsyncThunk<void, GrantPermission>(
+  "video/grant",
+  async (request, thunkApi) => {
+    await grantVideoApi(request.key, request.email.toLowerCase());
   }
 );
 

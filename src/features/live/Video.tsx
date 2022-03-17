@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState, Fragment } from "react";
-import { Box, SxProps, Theme } from "@mui/material";
-
-import { ErrorTypes } from "hls.js";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-
 import "./Video.css";
+
+
 
 const OvenPlayer = require("ovenplayer");
 
@@ -84,19 +82,17 @@ export const Video = (props: Props) => {
     return cleanup;
   }, [props.soruce, living]);
 
-  return (
-    <div>
-      {image != "" ? (
-        <img
-          src={image}
-          alt="Error Image"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        ></img>
-      ) : (
-        <div ref={playerRef} id="player" />
-      )}
-    </div>
-  );
+  if (image !== "") {
+    return (
+      <img
+        src={image}
+        alt="Error Image"
+        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+      ></img>
+    );
+  }
+
+  return <div ref={playerRef} id="player" />;
 };
 
 export default Video;
