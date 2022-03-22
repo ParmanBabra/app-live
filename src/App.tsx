@@ -20,15 +20,14 @@ import LiveEdit from "./features/admin-panel/LiveEdit";
 import VideoAdd from "./features/admin-panel/VideoAdd";
 // import { VideoForm } from "./features/admin-panel/VideoForm";
 import VideoEdit from "./features/admin-panel/VideoEdit";
+import Home from "./features/home/Home";
 import Live from "./features/live/Live";
 import Login from "./features/login/Login";
 import { UserState } from "./features/login/model";
 import RequireAuth from "./features/login/RequireAuth";
 import { logout } from "./features/login/userSlice";
-import VideoOnDemand from "./features/video-ondemand/VideoOnDemand";
 import Watching from "./features/video-ondemand/Watching";
 import logo from "./images/Logo.svg";
-
 
 function App() {
   const user = useSelector((state: RootState) => state.user);
@@ -88,7 +87,7 @@ function App() {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={() => toLink("/video-ondemand")}>
+          <MenuItem onClick={() => toLink("/")}>
             <ListItemIcon>
               <OndemandVideoIcon />
             </ListItemIcon>
@@ -170,10 +169,10 @@ function App() {
             }
           />
           <Route
-            path="/video-ondemand"
+            path="/"
             element={
               <RequireAuth>
-                <VideoOnDemand />
+                <Home />
               </RequireAuth>
             }
           />

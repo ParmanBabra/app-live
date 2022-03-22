@@ -1,0 +1,57 @@
+.carousel .slider-wrapper {
+  padding: 80px 40px;
+}
+
+.carousel .slide img {
+  height: 50vh;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.carousel .slide img.image-sm {
+  height: 25vh;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.carousel .slide {
+  transition: transform 500ms;
+}
+
+.carousel .slide.selected {
+  transform: scale(1.2);
+  z-index: 5;
+}
+
+.carousel .slide.previous {
+  transform: scale(1);
+}
+
+.carousel .slide .item {
+  position: relative;
+}
+
+.carousel .slide .item .icon {
+  opacity: 0;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 50px;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.carousel .slide .item:hover .icon {
+  opacity: 1;
+}
+
+.carousel .slide .label-live {
+  display: flex;
+  gap: 5px;
+  border-radius: 5px;
+  position: absolute;
+  color: white;
+  background-color: red;
+  padding: 5px 10px;
+}

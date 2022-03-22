@@ -9,8 +9,6 @@ import { RootState } from "../../app/store";
 import { grantVideo } from "../app/AppSlice";
 import Video from "../live/Video";
 import { VideoOnDeamandData } from "./model";
-// import { register } from "./ondemandSlice";
-import "./VideoOnDemand.css";
 
 
 function Watching() {

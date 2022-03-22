@@ -93,6 +93,7 @@ export const updateLive = async (data: LiveDataForm) => {
 
   await updateDoc(refDoc, {
     key: data.key,
+    id: data.key,
     title: data.title,
     create_date: data.create_date,
     live_date: data.live_date,
@@ -130,6 +131,7 @@ export const insertLive = async (data: LiveDataForm) => {
   const refDoc = doc(db, "live", result.id);
   await updateDoc(refDoc, {
     key: result.id,
+    id: result.id,
   });
 };
 
