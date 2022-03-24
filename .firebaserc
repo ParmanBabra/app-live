@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "app-live-36e59"
-  }
+    "default": "app-live-dev",
+    "staging": "app-live-dev",
+    "prod": "app-live-36e59"
+  },
+  "targets": {}
 }
