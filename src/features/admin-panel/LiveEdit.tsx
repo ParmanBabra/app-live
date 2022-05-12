@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { QRCodeCanvas } from "qrcode.react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,6 +19,9 @@ export default function LiveEdit() {
   ]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // eslint-disable-next-line no-restricted-globals
+  const qrLocation = `${location.origin}?returnPath=live/${id}`;
 
   const dataVideo = useSelector(
     ({ firestore: { data } }: RootState) => data["live"] && data["live"][id]
@@ -64,6 +68,8 @@ export default function LiveEdit() {
       data={video}
       loading={loading}
       isEdit={true}
-    />
+    >
+      <QRCodeCanvas size={200} includeMargin={true}  value={qrLocation} />
+    </LiveForm>
   );
 }

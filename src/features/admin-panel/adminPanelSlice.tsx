@@ -237,6 +237,11 @@ export const exportRegisterUsers = createAsyncThunk<void, string>(
         type: String,
         value: (x: RegisterUser) => x.tel,
       },
+      {
+        column: "Time", // Column title
+        type: String,
+        value: (x: RegisterUser) => x.watching_time,
+      },
     ];
 
     try {

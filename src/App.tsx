@@ -26,6 +26,7 @@ import Login from "./features/login/Login";
 import { UserState } from "./features/login/model";
 import RequireAuth from "./features/login/RequireAuth";
 import { logout } from "./features/login/userSlice";
+import { NoLogin } from "./features/no-login/NoLogin";
 import Watching from "./features/video-ondemand/Watching";
 import logo from "./images/Logo.svg";
 
@@ -87,7 +88,7 @@ function App() {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={() => toLink("/")}>
+          <MenuItem onClick={() => toLink("/home")}>
             <ListItemIcon>
               <OndemandVideoIcon />
             </ListItemIcon>
@@ -152,6 +153,8 @@ function App() {
         }}
       >
         <Routes>
+          <Route path="/" element={<NoLogin />} />
+
           <Route
             path="/live/:id"
             element={
@@ -169,7 +172,7 @@ function App() {
             }
           />
           <Route
-            path="/"
+            path="/home"
             element={
               <RequireAuth>
                 <Home />

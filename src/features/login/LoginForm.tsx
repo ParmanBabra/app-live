@@ -31,6 +31,7 @@ export const LoginForm: FunctionComponent<{
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    // console.log("ok");
 
     if (!email) {
       setError("Please input email.");

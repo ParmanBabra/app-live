@@ -1,26 +1,31 @@
-import { CheckCircle, Group, Image } from "@mui/icons-material";
+import {
+  CheckCircle,
+  Group,
+  Image,
+  Download as DownloadIcon,
+} from "@mui/icons-material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import { DesktopDateTimePicker, LoadingButton } from "@mui/lab";
 import {
   Alert,
-  AlertTitle, Button,
-  Container, Grid,
+  AlertTitle,
+  Button,
+  Container,
+  Grid,
   IconButton,
-  InputAdornment, TextField,
-  Typography
+  InputAdornment,
+  TextField,
+  Typography,
 } from "@mui/material";
 import _ from "lodash";
-import { FunctionComponent, useMemo, useRef, useState } from "react";
+import { FunctionComponent, ReactNode, useMemo, useRef, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import readXlsxFile from "read-excel-file";
-import {
-  emailValidate
-} from "../../app/helper";
+import { emailValidate } from "../../app/helper";
 import { GrantUsersList } from "./GrantUsersList";
 import { excelMap, UserInExcel, VideoDataForm } from "./model";
 import { PreviewImage } from "./PreviewImage";
-
 
 type SubmitedHandler = (
   data: VideoDataForm,
@@ -34,8 +39,9 @@ export const VideoForm: FunctionComponent<{
   data: VideoDataForm;
   onSubmited: SubmitedHandler;
   loading: boolean;
+  children?: ReactNode;
 }> = (props) => {
-  let { data, onSubmited, loading } = props;
+  let { data, onSubmited, loading, children } = props;
 
   const refForm = useRef<HTMLFormElement>(null);
   const refInputAddUser = useRef<HTMLInputElement>(null);
@@ -209,6 +215,7 @@ export const VideoForm: FunctionComponent<{
         onSubmit={handleSubmit(onSubmit)}
         container
         spacing={2}
+        sx={{ pb: 4 }}
       >
         <Grid item xs={12} sm={12}>
           <Controller
@@ -403,9 +410,35 @@ export const VideoForm: FunctionComponent<{
             style={{ width: "60px", marginTop: 20 }}
           ></img>
         </Grid>
+        {children && (
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            sx={{
+              mt: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {children}
+          </Grid>
+        )}
       </Grid>
 
       <Grid container spacing={1}>
+        <Grid item xs={12} sm={12}>
+          <Button
+            // eslint-disable-next-line no-restricted-globals
+            href={`${location.origin}/templates/register_excel.xlsx`}
+            variant="outlined"
+            fullWidth
+            startIcon={<DownloadIcon />}
+          >
+            Download Template
+          </Button>
+        </Grid>
         <Grid item xs={12} sm={12}>
           <label htmlFor="grant-button-file">
             <input
@@ -498,6 +531,7 @@ export const VideoForm: FunctionComponent<{
           <GrantUsersList data={filterUsers} onDeleting={handleOnDelete} />
         </Grid>
       </Grid>
+
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} sx={{ mt: 1 }}>
           <LoadingButton

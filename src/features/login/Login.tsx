@@ -7,7 +7,7 @@ import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 import { RegisterRequest } from "./model";
 import { register } from "./userSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const style: SxProps<Theme> = {
   position: "absolute" as "absolute",
@@ -26,6 +26,7 @@ const style: SxProps<Theme> = {
 export interface LoginProps {}
 
 export default function Login(props: LoginProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const user = useSelector((state: RootState) => state.user);
   const [Open, setOpen] = useState(!user.isLogin);
   const [registerMessage, setRegisterMessage] = useState<string | null>(null);
@@ -34,8 +35,14 @@ export default function Login(props: LoginProps) {
   const navigate = useNavigate();
 
   const handleSubmitLogin = () => {
+    let returnPath = searchParams.get("returnPath");
+
     setOpen(false);
-    navigate(`video-ondemand`, { replace: true });
+
+    if (returnPath == null) navigate(`/home`, { replace: true });
+    else {
+      navigate(returnPath, { replace: true });
+    }
   };
 
   const handleRegister = (message: string) => {
@@ -48,10 +55,16 @@ export default function Login(props: LoginProps) {
   };
 
   const handleSubmitRegister = async (data: RegisterRequest) => {
+    let returnPath = searchParams.get("returnPath");
+
     await dispatch(register(data));
     setState(0);
     setOpen(false);
-    navigate(`video-ondemand`, { replace: true });
+
+    if (returnPath == null) navigate(`/home`, { replace: true });
+    else {
+      navigate(returnPath, { replace: true });
+    }
   };
 
   const renderForms = (state: number) => {

@@ -6,7 +6,7 @@ import {
   CSSObject,
   FormControlLabel,
   FormGroup,
-  Theme
+  Theme,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -29,9 +29,6 @@ import { LiveCard } from "./LiveCard";
 import { LiveNotStart } from "./LiveNotStart";
 import { Chat } from "./model";
 import Video from "./Video";
-
-
-
 
 const drawerMaxWidth = 375;
 const drawerMinWidth = 75;
@@ -93,6 +90,7 @@ function Live() {
   let { id } = useParams();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [message, setMessage] = useState("");
+  const [timing, setTiming] = useState(0);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -126,14 +124,42 @@ function Live() {
     let live: any = doc.data();
 
     if (!live.watching_users.includes(user.email)) {
+      console.log("watching users");
       live.watching_users.push(user.email);
       live.watching_count += 1;
       await firestore.collection("live").doc(id).update(live);
     }
+
+    let watchingRef = await firestore
+      .collection("live")
+      .doc(id)
+      .collection("watching_users")
+      .doc(user.email as string)
+      .get();
+
+    if (watchingRef.exists) {
+      let watching: any = watchingRef.data();
+      watching.timing = timing + 1;
+      await firestore
+        .collection("live")
+        .doc(id)
+        .collection("watching_users")
+        .doc(user.email as string)
+        .update(watching);
+    } else {
+      await firestore
+        .collection("live")
+        .doc(id)
+        .collection("watching_users")
+        .doc(user.email as string)
+        .set({ email: user.email, timing: timing + 1 });
+    }
+
+    setTiming(timing + 1);
   };
 
   useEffect(() => {
-    let updating = setTimeout(updateUserCounting, 6000);
+    let updating = setTimeout(updateUserCounting, 10000);
 
     return function cleanup() {
       clearTimeout(updating);

@@ -2,6 +2,7 @@ import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useNavigate, useParams } from "react-router-dom";
+import { QRCodeCanvas } from "qrcode.react";
 import { RootState } from "../../app/store";
 import { BackdropLoading } from "../../components/BackdropLoading";
 import { updateVideo } from "./adminPanelSlice";
@@ -18,6 +19,9 @@ export default function VideoEdit() {
   ]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // eslint-disable-next-line no-restricted-globals
+  const qrLocation = `${location.origin}?returnPath=video-ondemand/${id}`;
 
   const dataVideo = useSelector(
     ({ firestore: { data } }: RootState) =>
@@ -60,6 +64,8 @@ export default function VideoEdit() {
   };
 
   return (
-    <VideoForm onSubmited={handleOnSubmit} data={video} loading={loading} />
+    <VideoForm onSubmited={handleOnSubmit} data={video} loading={loading}>
+      <QRCodeCanvas size={200} includeMargin={true} value={qrLocation} />
+    </VideoForm>
   );
 }

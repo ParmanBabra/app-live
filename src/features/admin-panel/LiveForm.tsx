@@ -13,10 +13,10 @@ import {
   InputAdornment,
   Switch,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import _ from "lodash";
-import { FunctionComponent, useMemo, useRef, useState } from "react";
+import { FunctionComponent, useMemo, useRef, useState, ReactNode } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import readXlsxFile from "read-excel-file";
 import { emailValidate } from "../../app/helper";
@@ -37,8 +37,9 @@ export const LiveForm: FunctionComponent<{
   onSubmited: SubmitedHandler;
   loading: boolean;
   isEdit: boolean;
+  children?: ReactNode;
 }> = (props) => {
-  let { data, onSubmited, loading, isEdit } = props;
+  let { data, onSubmited, loading, isEdit, children } = props;
 
   const refForm = useRef<HTMLFormElement>(null);
   const refInputAddUser = useRef<HTMLInputElement>(null);
@@ -212,6 +213,7 @@ export const LiveForm: FunctionComponent<{
         onSubmit={handleSubmit(onSubmit)}
         container
         spacing={2}
+        sx={{ pb: 4 }}
       >
         <Grid item xs={12} sm={12}>
           <Controller
@@ -401,6 +403,21 @@ export const LiveForm: FunctionComponent<{
             style={{ width: "60px", marginTop: 20 }}
           ></img>
         </Grid>
+        {children && (
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            sx={{
+              mt: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {children}
+          </Grid>
+        )}
       </Grid>
 
       <Grid container spacing={1}>

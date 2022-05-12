@@ -24,6 +24,8 @@ import {
   UserData,
   VideoDataForm,
 } from "./model";
+import _ from "lodash";
+import moment from "moment";
 
 export const uploadFile = async (file: File): Promise<string> => {
   const id = uuidv4();
@@ -125,6 +127,7 @@ export const insertLive = async (data: LiveDataForm) => {
     register_users: [],
     watching_count: 0,
     watching_users: [],
+    timing_watching_users: [],
     show_watching_users: data.show_watching_user,
   });
 
@@ -170,8 +173,15 @@ export const getRegisterUsers = async (
   let live: any = docLive.data();
   let register_users = live.register_users as string[];
 
+  const watching_users_col_ref = collection(refDoc, "watching_users");
   const collectionPath = collection(db, "user-infomations");
   const batches = [];
+
+  const watching_users_ref = await getDocs(watching_users_col_ref);
+  const watching_users = _.mapKeys(
+    watching_users_ref.docs.map((x) => x.data()),
+    (x) => x.email
+  );
 
   while (register_users.length) {
     // firestore limits batches to 10
@@ -183,12 +193,21 @@ export const getRegisterUsers = async (
         (results) =>
           results.docs.map((x) => {
             let data = x.data();
+            let watching_user = watching_users[data.email];
+            let watching_time = "00:00:00";
+            if (watching_user) {
+              watching_time = moment(new Date(watching_user.timing * 10000))
+                .utc()
+                .format("HH:mm:ss");
+            }
+
             return {
               email: data.email,
               first_name: data.first_name,
               last_name: data.last_name,
               organization: data.organization,
               tel: data.tel,
+              watching_time: watching_time,
             };
           })
       )

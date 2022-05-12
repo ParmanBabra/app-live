@@ -46,6 +46,7 @@ export type LiveData = {
   step: number;
   watching_count: number;
   watching_users: string[];
+  timing_watching_users: number[];
   show_watching_user: boolean;
 };
 
@@ -83,6 +84,7 @@ export type RegisterUser = {
   last_name: string;
   organization: string;
   tel: string;
+  watching_time: string;
 };
 
 export type RegisterUsersInfomation = {
