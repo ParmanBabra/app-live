@@ -301,3 +301,20 @@ export const grantVideoApi = async (key: string, email: string) => {
     console.log(error);
   }
 };
+
+export const updateReportVideoApi = async (key: string, email: string) => {
+  try {
+    let db = getFirestore();
+    let docRef = doc(db, "video-on-demand", key);
+    let ref = await getDoc(docRef);
+    let live: any = ref.data();
+    let report_users: string[] = live.report_users;
+    if (!report_users.includes(email)) report_users.push(email);
+
+    await updateDoc(docRef, {
+      report_users: report_users,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -1,6 +1,4 @@
-import {
-  Box
-} from "@mui/material";
+import { Box } from "@mui/material";
 import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
@@ -9,7 +7,7 @@ import { RootState } from "../../app/store";
 import { grantVideo } from "../app/AppSlice";
 import Video from "../live/Video";
 import { VideoOnDeamandData } from "./model";
-
+import PermissionDeny from "./PermissionDeny";
 
 function Watching() {
   let { id } = useParams();
@@ -27,13 +25,13 @@ function Watching() {
     (state: RootState) => state.firestore.data["video-on-demand"]
   );
 
-  useEffect(() => {
-    dispatch(grantVideo({ email: user.email as string, key: id as string }));
-  });
-
   if (!videos) return <Fragment />;
 
   let video = videos[id] as VideoOnDeamandData;
+
+  if (!video.grant_users.includes(user.email as string)) {
+    return <PermissionDeny />;
+  }
 
   return (
     <Fragment>
