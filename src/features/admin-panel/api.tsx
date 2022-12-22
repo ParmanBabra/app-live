@@ -308,6 +308,9 @@ export const updateReportVideoApi = async (key: string, email: string) => {
     let docRef = doc(db, "video-on-demand", key);
     let ref = await getDoc(docRef);
     let live: any = ref.data();
+    
+    if (!live.report_users) live.report_users = [];
+
     let report_users: string[] = live.report_users;
     if (!report_users.includes(email)) report_users.push(email);
 

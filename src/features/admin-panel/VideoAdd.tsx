@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   defaultChannelImage,
   defaultErrorImage,
-  defaultPreLiveImage
+  defaultPreLiveImage,
 } from "../../app/helper";
 import { RootState } from "../../app/store";
 import { insertVideo } from "./adminPanelSlice";
@@ -27,6 +27,7 @@ export default function VideoAdd() {
     live_url: "",
     title: "",
     grant_users: [],
+    report_users: [],
   };
 
   const handleOnSubmit = async (

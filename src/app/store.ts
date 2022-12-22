@@ -35,6 +35,12 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
+console.log(firebaseConfig);
+
+if (process.env.NODE_ENV === "production") {
+  //do something in production
+  console.log("XXXX");
+}
 const rrfConfig = {
   // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
 };

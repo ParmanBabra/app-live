@@ -16,6 +16,7 @@ import { VideoOnDeamandData } from "../video-ondemand/model";
 import _ from "lodash";
 
 import "./ListVideo.css";
+import contract from "./../../images/contract.png";
 
 export const ListVideo = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -35,10 +36,44 @@ export const ListVideo = () => {
 
   const videos = _.values(videoList) as VideoOnDeamandData[];
 
-
   const handleClickVideo = (key: string) => {
     navigate(`/video-ondemand/${key}`, { replace: true });
   };
+
+  function listingVideo(videos: VideoOnDeamandData[]) {
+    if (videos.length === 0) {
+      return (
+        <Grid item xs={12}>
+          <img src={contract} style={{ width: "100%" }} />
+        </Grid>
+      );
+    }
+
+    return videos.map((video) => (
+      <Grid item key={video.key} xs={12} sm={6} md={4}>
+        <Card
+          onClick={() => handleClickVideo(video.key)}
+          elevation={3}
+          sx={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          className="video-card"
+        >
+          <CardMedia
+            component="img"
+            image={video.pre_live_image}
+            alt={video.title}
+          />
+          <CardHeader
+            avatar={<Avatar alt="Remy Sharp" src={video.channel_image} />}
+            title={video.title}
+          />
+        </Card>
+      </Grid>
+    ));
+  }
 
   return (
     <Fragment>
@@ -59,30 +94,7 @@ export const ListVideo = () => {
         </Typography>
       </Box>
       <Grid container spacing={3}>
-        {videos.map((video) => (
-          <Grid item key={video.key} xs={12} sm={6} md={4}>
-            <Card
-              onClick={() => handleClickVideo(video.key)}
-              elevation={3}
-              sx={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-              }}
-              className="video-card"
-            >
-              <CardMedia
-                component="img"
-                image={video.pre_live_image}
-                alt={video.title}
-              />
-              <CardHeader
-                avatar={<Avatar alt="Remy Sharp" src={video.channel_image} />}
-                title={video.title}
-              />
-            </Card>
-          </Grid>
-        ))}
+        {listingVideo(videos)}
       </Grid>
     </Fragment>
   );

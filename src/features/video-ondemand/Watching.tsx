@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useParams } from "react-router-dom";
 import { RootState } from "../../app/store";
-import { grantVideo } from "../app/AppSlice";
+import { grantVideo, updateReportVideo } from "../app/AppSlice";
 import Video from "../live/Video";
 import { VideoOnDeamandData } from "./model";
 import PermissionDeny from "./PermissionDeny";
@@ -25,14 +25,31 @@ function Watching() {
     (state: RootState) => state.firestore.data["video-on-demand"]
   );
 
+  useEffect(() => {
+    if (!videos) {
+      return;
+    }
+
+    let video = videos[id as string] as VideoOnDeamandData;
+
+    if (!video.grant_users.includes(user.email as string)) {
+      return;
+    }
+
+    console.log("Update report");
+
+    dispatch(
+      updateReportVideo({ key: id as string, email: user.email as string })
+    );
+  }, [videos]);
+
   if (!videos) return <Fragment />;
 
-  let video = videos[id] as VideoOnDeamandData;
+  let video = videos[id as string] as VideoOnDeamandData;
 
   if (!video.grant_users.includes(user.email as string)) {
     return <PermissionDeny />;
   }
-
   return (
     <Fragment>
       <Box
@@ -43,14 +60,6 @@ function Watching() {
           width: "100vw",
         }}
       >
-        {/* <Button
-          type="button"
-          onClick={async () => {
-            await dispatch(register(id as string));
-          }}
-        >
-          Register
-        </Button> */}
         <Video
           title={video.title}
           soruce={video.live_url}

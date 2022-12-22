@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { grantLiveApi, grantVideoApi } from "../admin-panel/api";
-import { AppState, GrantPermission } from "./model";
-
+import {
+  grantLiveApi,
+  grantVideoApi,
+  updateReportVideoApi,
+} from "../admin-panel/api";
+import { AppState, GrantPermission, ReportingUser } from "./model";
 
 let userJson: string | null = localStorage.getItem("app");
 let init: any = JSON.parse(userJson ? userJson : `{}`);
@@ -24,6 +27,13 @@ export const grantVideo = createAsyncThunk<void, GrantPermission>(
   "video/grant",
   async (request, thunkApi) => {
     await grantVideoApi(request.key, request.email.toLowerCase());
+  }
+);
+
+export const updateReportVideo = createAsyncThunk<void, ReportingUser>(
+  "video/grant",
+  async (request, thunkApi) => {
+    await updateReportVideoApi(request.key, request.email.toLowerCase());
   }
 );
 

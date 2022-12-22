@@ -16,6 +16,7 @@ export type VideoData = {
   pre_live_image: string;
   channel_image: string;
   grant_users: string[];
+  report_users: string[];
 };
 
 export type VideoDataForm = {
@@ -29,6 +30,7 @@ export type VideoDataForm = {
   pre_live_image: string;
   channel_image: string;
   grant_users: string[];
+  report_users: string[];
 };
 
 export type LiveData = {
